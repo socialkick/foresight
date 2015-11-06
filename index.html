@@ -1,0 +1,72 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Foresight - Weather App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+
+    <h1>Foresight</h1>
+
+
+
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script>
+
+    // Forecast.Io variables - https://developer.forecast.io/ --------------------
+        var apiUrl = "https://api.forecast.io/forecast",
+            apiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
+            lat = "37.8267",
+            lon = "-122.423",
+            forecastRequest = apiUrl + "/" + apiKey  + "/" + lat + "," + lon + "?callback=?",
+            forecastData = null;
+
+            console.log(forecastRequest);
+
+
+    // Firebase variables - https://foresightweather.firebaseio.com/ --------------------
+        var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
+            dataObject = null;
+
+
+    // Functions for Both -------------------
+        $(document).ready(function(){
+            $.getJSON(forecastRequest, function(data){
+                forecastData = data;
+                        console.log(forecastData);
+                fireBase.child("newForecast").set(forecastData);
+            });
+        });
+
+    </script>
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
