@@ -223,6 +223,22 @@ footer {
     }
 
 
+
+.errorMessage {
+    display: none;
+}
+.errorMessage:before {
+    content: "Please enter a valid Zip Code.";
+    display: block;
+}
+
+
+
+
+
+
+
+
 @media (max-width:600px) {
     body {
         padding-top: 0;

@@ -14,9 +14,23 @@
 <body>
 
 
-    <h1>Foresight</h1>
-    <input id="zipCodeInput" placeholder="enter your zipcode" autofocus />
-    <h2 id="currentCity">loading...</h2>
+    <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
+    <p>Weather App</p>
+    <br>
+
+    <div id="results">
+        <h2 class="city"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
+        <p class="timestamp"></p>
+        <p class="temperature"></p>
+        <p class="humidity"></p>
+        <p class="windSpeed"></p>
+    </div>
+
+    <br>
+
+    <input id="zipCodeInput" type="search" placeholder="enter a  Zip Code" autofocus />
+    <p class="errorMessage"></p>
+
 
 
     <script src="js/modernizr-2.8.3.min.js"></script>
@@ -46,18 +60,51 @@
         var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
             dataObject = null;
 
-    // Global Variables -------------------
-        var success = function(){ return (console.log("Success!")) };
-        var failure = function(failurePoint){ return (console.log("Failure Point: " + failurePoint)) };
+    // Time Variables -------------------
+        var dt = new Date(), hours = dt.getHours(), minutes = dt.getMinutes(), meridiem = "am";
+            if (hours > 12) { hours -= 12; meridiem = "pm"; }
+            if (minutes < 10) { minutes = "0" + minutes; }
+        var timestamp = hours + ":" + minutes + meridiem;
 
-    // Functions -------------------
+    // Global Variables -------------------
+        var populateHtml = function() {
+                fireBase.on("value", function (snapshot) {
+                    var lastSnapshot = snapshot.val();
+                    $('.city').text(lastSnapshot.newZipCode.city);
+                    $('.timestamp').text("At Time: " + lastSnapshot.timestamp);
+                    $('.temperature').text("Temperature: " + lastSnapshot.newForecast.currently.temperature + "°");
+                    $('.humidity').text("Humidity: " + (lastSnapshot.newForecast.currently.humidity) * 100 + "%");
+                    $('.windSpeed').text("Wind Speed: " + lastSnapshot.newForecast.currently.windSpeed + "mph");
+                    hideErrorMessage();
+                    showResults();
+                }, function (errorObject) {
+                    console.log("The read failed: " + errorObject.code);
+                });
+            },
+            failure = function(failurePoint){
+                showErrorMessage();
+                return (console.log("Failure Point: " + failurePoint))
+            },
+            success = function(){
+                hideErrorMessage();
+                return (console.log("Success!"))
+            },
+            showResults = function(){ $('#results').css('display','block') },
+            hideResults = function(){ $('#results').css('display','none') },
+            showErrorMessage = function(){ $('.errorMessage').css('display','block'); },
+            hideErrorMessage = function(){ $('.errorMessage').css('display','none') };
+
+    // Making the JSON Requests -------------------
         $(document).ready(function(){
+            populateHtml();
             $('#zipCodeInput').keyup(function(e) {
                 zipCodeInput = $('#zipCodeInput').val();
                 if (e.keyCode == 13) {
+                    hideResults();
                     zcRequestUrl = "https://www.zipcodeapi.com/rest/" + zcApiKey + "/info.json/" + zipCodeInput + "/degrees";
                     $.getJSON(zcRequestUrl, function(data) {
                         zipCodeData = data;
+                        fireBase.child("newZipCode").set(zipCodeData);
                         lat = zipCodeData.lat;
                         lng = zipCodeData.lng;
                         fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
@@ -65,19 +112,17 @@
                             weatherData = data;
                             console.log(weatherData);
                             fireBase.child("newForecast").set(weatherData);
+                            fireBase.child("timestamp").set(timestamp);
                             success();
+                            populateHtml();
                         })
                         .error(function(){
                             failure("getting forecast.io JSON data.");
-                        })
-                        ;
-                        $('#currentCity').text(zipCodeData.city);
-                        $('#zipCodeInput').css('background-color','rgba(0,0,0,0.5)');
+                        });
                     })
                     .error(function(){
                         failure("getting zip code JSON data.");
-                    })
-                    ;
+                    });
                 }
             });
         });
