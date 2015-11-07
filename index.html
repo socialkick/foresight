@@ -13,43 +13,77 @@
 </head>
 <body>
 
-    <h1>Foresight</h1>
 
+    <h1>Foresight</h1>
+    <input id="zipCodeInput" placeholder="enter your zipcode" autofocus />
+    <h2 id="currentCity">loading...</h2>
 
 
     <script src="js/modernizr-2.8.3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+    <script src="js/main.js"></script>
+
+
     <script>
 
+    // ZipCodeApi variables - https://www.zipcodeapi.com/ --------------------
+        var zcApiKey /* Client-side API Key */ = "js-mDrU9rkkUvySyufyPauQEsOyt7eckpIH3aCcBWxvr5o0ADypO3gsw41ZbgbwGUeJ",
+            newZipCode = 94501,
+            zipCodeInput = null,
+            zcRequestUrl = null,
+            zipCodeData = null;
+
     // Forecast.Io variables - https://developer.forecast.io/ --------------------
-        var apiUrl = "https://api.forecast.io/forecast",
-            apiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
-            lat = "37.8267",
-            lon = "-122.423",
-            forecastRequest = apiUrl + "/" + apiKey  + "/" + lat + "," + lon + "?callback=?",
-            forecastData = null;
-
-            console.log(forecastRequest);
-
+        var fcApiUrl = "https://api.forecast.io/forecast",
+            fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
+            lat = null,
+            lng = null,
+            fcRequestUrl = null,
+            weatherData = null;
 
     // Firebase variables - https://foresightweather.firebaseio.com/ --------------------
         var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
             dataObject = null;
 
+    // Global Variables -------------------
+        var success = function(){ return (console.log("Success!")) };
+        var failure = function(failurePoint){ return (console.log("Failure Point: " + failurePoint)) };
 
-    // Functions for Both -------------------
+    // Functions -------------------
         $(document).ready(function(){
-            $.getJSON(forecastRequest, function(data){
-                forecastData = data;
-                        console.log(forecastData);
-                fireBase.child("newForecast").set(forecastData);
+            $('#zipCodeInput').keyup(function(e) {
+                zipCodeInput = $('#zipCodeInput').val();
+                if (e.keyCode == 13) {
+                    zcRequestUrl = "https://www.zipcodeapi.com/rest/" + zcApiKey + "/info.json/" + zipCodeInput + "/degrees";
+                    $.getJSON(zcRequestUrl, function(data) {
+                        zipCodeData = data;
+                        lat = zipCodeData.lat;
+                        lng = zipCodeData.lng;
+                        fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
+                        $.getJSON(fcRequestUrl, function(data){
+                            weatherData = data;
+                            console.log(weatherData);
+                            fireBase.child("newForecast").set(weatherData);
+                            success();
+                        })
+                        .error(function(){
+                            failure("getting forecast.io JSON data.");
+                        })
+                        ;
+                        $('#currentCity').text(zipCodeData.city);
+                        $('#zipCodeInput').css('background-color','rgba(0,0,0,0.5)');
+                    })
+                    .error(function(){
+                        failure("getting zip code JSON data.");
+                    })
+                    ;
+                }
             });
         });
 
     </script>
 
-    <script src="js/main.js"></script>
 
 </body>
 </html>
