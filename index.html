@@ -13,42 +13,29 @@
 </head>
 <body>
 
-    <div style="border:1px solid #fff; padding:1em; width: 200px; display:block; margin:0 auto;">
-        <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
-        <p>- - - Weather App - - -</p>
-    </div>
+
+    <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
+    <p>Weather App</p>
     <br>
 
-    <input id="locationInput" type="search" placeholder="Enter Location" autofocus />
-    <p class="errorMessage"></p>
-    <br><br>
-
     <div id="results">
-        <h2 class="locationName"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
-
-        <hr><b>Current Conditions</b><hr>
-        <!--<p class="timestamp"></p>-->
+        <h2 class="city"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
+        <p class="timestamp"></p>
         <p class="temperature"></p>
         <p class="humidity"></p>
         <p class="windSpeed"></p>
-        <br>
-
-        <hr><b>Forecast Summary</b><hr>
-        <p class="nextHour"></p>
-        <p class="nextDay"></p>
-        <p class="nextWeek"></p>
-        <br>
-
-        <hr><b>Detailed Forecast</b><hr>
-        <p>Day 1</p>
-        <p>Day 2</p>
-        <p>Day 3</p>
-        <p>Day 4</p>
-        <p>Day 5</p>
-        <p>Day 6</p>
-        <p>Day 7</p>
     </div>
 
+<<<<<<< HEAD
+=======
+    <br>
+
+    <input id="zipCodeInput" type="search" placeholder="enter a  Zip Code" autofocus />
+    <p class="errorMessage"></p>
+
+
+
+>>>>>>> parent of 46b7a9a... Changed ZipCodeApi to OpenCageData
     <script src="js/modernizr-2.8.3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
@@ -57,6 +44,7 @@
 
     <script>
 
+<<<<<<< HEAD
     // OpenCageData variables - http://geocoder.opencagedata.com/
         var ocdApiUrl = "http://api.opencagedata.com/geocode/v1/json?q=",
             ocdApiKey = "4ace6317360a3946395ae4d807e84cd1",
@@ -82,10 +70,20 @@
                 locationName = locationName + locationExtra;
             },
             forecastURL = null;
+=======
+    // ZipCodeApi variables - https://www.zipcodeapi.com/ --------------------
+        var zcApiKey /* Client-side API Key */ = "js-mDrU9rkkUvySyufyPauQEsOyt7eckpIH3aCcBWxvr5o0ADypO3gsw41ZbgbwGUeJ",
+            newZipCode = 94501,
+            zipCodeInput = null,
+            zcRequestUrl = null,
+            zipCodeData = null;
+>>>>>>> parent of 46b7a9a... Changed ZipCodeApi to OpenCageData
 
     // Forecast.Io variables - https://developer.forecast.io/
         var fcApiUrl = "https://api.forecast.io/forecast",
             fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
+            lat = null,
+            lng = null,
             fcRequestUrl = null,
             weatherData = null;
 
@@ -93,10 +91,35 @@
         var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
             dataObject = null;
 
+<<<<<<< HEAD
     // Other Global Variables
         var failure = function(failurPoint){
+=======
+    // Time Variables -------------------
+        var dt = new Date(), hours = dt.getHours(), minutes = dt.getMinutes(), meridiem = "am";
+            if (hours > 12) { hours -= 12; meridiem = "pm"; }
+            if (minutes < 10) { minutes = "0" + minutes; }
+        var timestamp = hours + ":" + minutes + meridiem;
+
+    // Global Variables -------------------
+        var populateHtml = function() {
+                fireBase.on("value", function (snapshot) {
+                    var lastSnapshot = snapshot.val();
+                    $('.city').text(lastSnapshot.newZipCode.city);
+                    $('.timestamp').text("At Time: " + lastSnapshot.timestamp);
+                    $('.temperature').text("Temperature: " + lastSnapshot.newForecast.currently.temperature + "°");
+                    $('.humidity').text("Humidity: " + (lastSnapshot.newForecast.currently.humidity) * 100 + "%");
+                    $('.windSpeed').text("Wind Speed: " + lastSnapshot.newForecast.currently.windSpeed + "mph");
+                    hideErrorMessage();
+                    showResults();
+                }, function (errorObject) {
+                    console.log("The read failed: " + errorObject.code);
+                });
+            },
+            failure = function(failurePoint){
+>>>>>>> parent of 46b7a9a... Changed ZipCodeApi to OpenCageData
                 showErrorMessage();
-                return (console.log("Failure: " + failurePoint))
+                return (console.log("Failure Point: " + failurePoint))
             },
             success = function(details){
                 hideErrorMessage();
@@ -165,6 +188,7 @@
 // ------------------- Putting it All Together -------------------
 
         $(document).ready(function(){
+<<<<<<< HEAD
 //            populateHtml();
             $('#locationInput').keyup(function(e) {
                 locationInput = $('#locationInput').val();
@@ -191,6 +215,37 @@
                 }
             });
 
+=======
+            populateHtml();
+            $('#zipCodeInput').keyup(function(e) {
+                zipCodeInput = $('#zipCodeInput').val();
+                if (e.keyCode == 13) {
+                    hideResults();
+                    zcRequestUrl = "https://www.zipcodeapi.com/rest/" + zcApiKey + "/info.json/" + zipCodeInput + "/degrees";
+                    $.getJSON(zcRequestUrl, function(data) {
+                        zipCodeData = data;
+                        fireBase.child("newZipCode").set(zipCodeData);
+                        lat = zipCodeData.lat;
+                        lng = zipCodeData.lng;
+                        fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
+                        $.getJSON(fcRequestUrl, function(data){
+                            weatherData = data;
+                            console.log(weatherData);
+                            fireBase.child("newForecast").set(weatherData);
+                            fireBase.child("timestamp").set(timestamp);
+                            success();
+                            populateHtml();
+                        })
+                        .error(function(){
+                            failure("getting forecast.io JSON data.");
+                        });
+                    })
+                    .error(function(){
+                        failure("getting zip code JSON data.");
+                    });
+                }
+            });
+>>>>>>> parent of 46b7a9a... Changed ZipCodeApi to OpenCageData
         });
 
     </script>
