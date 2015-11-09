@@ -165,32 +165,6 @@
 
     // ------------------- Putting it All Together -------------------
 
-    $(document).ready(function(){
-        hideResults();
-
-        var forecastURL = null;
-    // Get last search from Firebase
-        fireBase.on("value", function (snapshot) {
-            var lastSnapshot = snapshot.val();
-            forecastURL = lastSnapshot.forecastRequestURL;
-            win("Retrieved last query from Firebase.");
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-
-        console.log(forecastURL);
-        if (forecastURL !== null) {
-            var getForecastData = function(url){
-                $.getJSON(url, function(data){
-                    weatherData = data;
-                    fireBase.child("forecast").set(weatherData);
-                })
-                .success(win("Got JSON weather Data."))
-                .error(loss("getting forecast.io JSON data."))
-            }; getForecastData(forecastURL);
-            console.log(weatherData);
-        }
-
 
 
     });
