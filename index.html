@@ -13,24 +13,41 @@
 </head>
 <body>
 
-
-    <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
-    <p>Weather App</p>
+    <div style="border:1px solid #fff; padding:1em; width: 200px; display:block; margin:0 auto;">
+        <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
+        <p>- - - Weather App - - -</p>
+    </div>
     <br>
 
+    <input id="locationInput" type="search" placeholder="Enter Location" autofocus />
+    <p class="errorMessage"></p>
+    <br><br>
+
     <div id="results">
-        <h2 class="city"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
-        <p class="timestamp"></p>
+        <h2 class="locationName"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
+
+        <hr><b>Current Conditions</b><hr>
+        <!--<p class="timestamp"></p>-->
         <p class="temperature"></p>
         <p class="humidity"></p>
         <p class="windSpeed"></p>
+        <br>
+
+        <hr><b>Forecast Summary</b><hr>
+        <p class="nextHour"></p>
+        <p class="nextDay"></p>
+        <p class="nextWeek"></p>
+        <br>
+
+        <hr><b>Detailed Forecast</b><hr>
+        <p>Day 1</p>
+        <p>Day 2</p>
+        <p>Day 3</p>
+        <p>Day 4</p>
+        <p>Day 5</p>
+        <p>Day 6</p>
+        <p>Day 7</p>
     </div>
-
-    <br>
-
-    <input id="zipCodeInput" type="search" placeholder="enter a  Zip Code" autofocus />
-    <p class="errorMessage"></p>
-
 
 
     <script src="js/modernizr-2.8.3.min.js"></script>
@@ -41,18 +58,18 @@
 
     <script>
 
-    // ZipCodeApi variables - https://www.zipcodeapi.com/ --------------------
-        var zcApiKey /* Client-side API Key */ = "js-mDrU9rkkUvySyufyPauQEsOyt7eckpIH3aCcBWxvr5o0ADypO3gsw41ZbgbwGUeJ",
-            newZipCode = 94501,
-            zipCodeInput = null,
-            zcRequestUrl = null,
-            zipCodeData = null;
+    // OpenCageData variables - http://geocoder.opencagedata.com/ --------------------
+        var ocdApiKey = "4ace6317360a3946395ae4d807e84cd1",
+            ocdRequestUrl = null,
+            locationInput = null,
+            locationData = null,
+            locationName = null,
+            lat = null,
+            lng = null;
 
     // Forecast.Io variables - https://developer.forecast.io/ --------------------
         var fcApiUrl = "https://api.forecast.io/forecast",
             fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
-            lat = null,
-            lng = null,
             fcRequestUrl = null,
             weatherData = null;
 
@@ -61,20 +78,22 @@
             dataObject = null;
 
     // Time Variables -------------------
-        var dt = new Date(), hours = dt.getHours(), minutes = dt.getMinutes(), meridiem = "am";
-            if (hours > 12) { hours -= 12; meridiem = "pm"; }
-            if (minutes < 10) { minutes = "0" + minutes; }
-        var timestamp = hours + ":" + minutes + meridiem;
+//        var dt = new Date(), hours = dt.getHours(), minutes = dt.getMinutes(), meridiem = "am";
+//            if (hours > 12) { hours -= 12; meridiem = "pm"; }
+//            if (minutes < 10) { minutes = "0" + minutes; }
+//        var timestamp = hours + ":" + minutes + meridiem;
 
     // Global Variables -------------------
         var populateHtml = function() {
                 fireBase.on("value", function (snapshot) {
                     var lastSnapshot = snapshot.val();
-                    $('.city').text(lastSnapshot.newZipCode.city);
-                    $('.timestamp').text("At Time: " + lastSnapshot.timestamp);
-                    $('.temperature').text("Temperature: " + lastSnapshot.newForecast.currently.temperature + "°");
-                    $('.humidity').text("Humidity: " + (lastSnapshot.newForecast.currently.humidity) * 100 + "%");
-                    $('.windSpeed').text("Wind Speed: " + lastSnapshot.newForecast.currently.windSpeed + "mph");
+                    $('.locationName').text(lastSnapshot.locationName);
+                    $('.temperature').text("Temperature: " + lastSnapshot.forecast.currently.temperature + "°");
+                    $('.humidity').text("Humidity: " + Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
+                    $('.windSpeed').text("Wind Speed: " + lastSnapshot.forecast.currently.windSpeed + "mph");
+                    $('.nextHour').text("Next Hour: " + lastSnapshot.forecast.minutely.summary);
+                    $('.nextDay').text("Next 24 Hrs: " + lastSnapshot.forecast.hourly.summary);
+                    $('.nextWeek').text("Next 7 Days: " + lastSnapshot.forecast.daily.summary);
                     hideErrorMessage();
                     showResults();
                 }, function (errorObject) {
@@ -83,7 +102,7 @@
             },
             failure = function(failurePoint){
                 showErrorMessage();
-                return (console.log("Failure Point: " + failurePoint))
+                return (console.log("Failure: " + failurePoint))
             },
             success = function(){
                 hideErrorMessage();
@@ -97,23 +116,26 @@
     // Making the JSON Requests -------------------
         $(document).ready(function(){
             populateHtml();
-            $('#zipCodeInput').keyup(function(e) {
-                zipCodeInput = $('#zipCodeInput').val();
+            $('#locationInput').keyup(function(e) {
+                locationInput = $('#locationInput').val();
                 if (e.keyCode == 13) {
                     hideResults();
-                    zcRequestUrl = "https://www.zipcodeapi.com/rest/" + zcApiKey + "/info.json/" + zipCodeInput + "/degrees";
-                    $.getJSON(zcRequestUrl, function(data) {
-                        zipCodeData = data;
-                        fireBase.child("newZipCode").set(zipCodeData);
-                        lat = zipCodeData.lat;
-                        lng = zipCodeData.lng;
+                    ocdRequestUrl = "http://api.opencagedata.com/geocode/v1/json?q=" + locationInput + "&key=" + ocdApiKey;
+                    $.getJSON(ocdRequestUrl, function(data) {
+                        locationData = data;
+                        fireBase.child("location").set(locationData);
+
+                        inputFormating();
+
+                        lat = locationData.results[0].geometry.lat;
+                        lng = locationData.results[0].geometry.lng;
+                        fireBase.child("locationLatitude").set(locationData.results[0].geometry.lat);
+                        fireBase.child("locationLongitude").set(locationData.results[0].geometry.lng);
+
                         fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
                         $.getJSON(fcRequestUrl, function(data){
                             weatherData = data;
-                            console.log(weatherData);
-                            fireBase.child("newForecast").set(weatherData);
-                            fireBase.child("timestamp").set(timestamp);
-                            success();
+                            fireBase.child("forecast").set(weatherData);
                             populateHtml();
                         })
                         .error(function(){
@@ -123,8 +145,29 @@
                     .error(function(){
                         failure("getting zip code JSON data.");
                     });
+                    $('#locationInput').val('');
                 }
             });
+
+            var inputFormating = function(){
+                locationName = locationInput;
+                var checkName = function(input){
+                    if ( input.city !== undefined ) { locationName = input.city; }
+                    else if ( locationData.results[1].components.city !== undefined ) { locationName = locationData.results[1].components.city; }
+                    else if ( input.administrative !== undefined ) { locationName = input.administrative }
+                    else if ( input.county !== undefined ) { locationName = input.county; }
+                    else if ( input.state !== undefined ) { locationName = input.state; }
+                    else if ( input.country!== undefined ) { locationName = input.country; }
+                    console.log(locationName);
+                }; checkName(locationData.results[0].components);
+                var locationExtra = '';
+                var checkState = function(data){
+                    if ( locationName !== data.state && data.state !== undefined ) { locationExtra = ", " + data.state }
+                    else if ( locationName == data.state && data.country_code !== undefined ) { locationExtra = ", " + (data.country_code).toUpperCase() }
+                }; checkState(locationData.results[0].components);
+                fireBase.child("locationName").set(locationName + locationExtra);
+            };
+
         });
 
     </script>
