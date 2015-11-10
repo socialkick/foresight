@@ -9,12 +9,13 @@
 
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
+    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+
 
 </head>
 <body>
-
 <div style="border:1px solid #fff; padding:1em; width: 200px; display:block; margin:0 auto;">
-    <h1 style="font-size:1.2em; text-transform:uppercase;">Foresight</h1>
+    <h1 style="font-size:1.2em; margin-top: 0.2em; text-transform:uppercase;">Foresight</h1>
     <p>- - - Weather App - - -</p>
 </div>
 <br>
@@ -23,73 +24,114 @@
 <p class="errorMessage"></p>
 <br><br>
 
+<div id="loadingResults">Fetching Forecast...</div>
 <div id="results">
-    <h2 class="locationName"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
+    <h2 class="locationName"></h2>
 
-    <hr><b>Current Conditions</b><hr>
-    <p class="temperature"></p>
-    <p class="humidity"></p>
-    <p class="windSpeed"></p>
-    <br>
+    <div id="currently">
+        <h3>Right Now</h3>
 
-    <hr><b>Forecast Summary</b><hr>
-    <p class="nextHour"></p>
-    <p class="nextDay"></p>
-    <p class="nextWeek"></p>
-    <br>
+        <div class="icon">
+            <canvas></canvas>
+        </div>
+        <div class="temperature">
+            <span class="val"></span>
+        </div>
 
-    <hr><b>7-Day Forecast</b><hr>
-    <ul id="dayList">
-        <li id="day0">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day1">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day2">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day3">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day4">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day5">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-        <li id="day6">
-            <div class="dayOfWeek"></div>
-            <canvas class="icon"></canvas>
-            <div class="dayDescription"></div>
-            <div class="high"></div>
-            <div class="low"></div>
-        </li>
-    </ul>
+        <ul>
+            <li class="summary">
+                <span class="label">Currently: </span>
+                <span class="val"></span>
+            </li>
+            <li class="apparentTemperature">
+                <span class="label">Feels Like: </span>
+                <span class="val"></span>
+            </li>
+            <li class="windSpeed">
+                <span class="label">Wind Speed: </span>
+                <span class="val"></span>
+            </li>
+            <li class="visibility">
+                <span class="label">Visibility: </span>
+                <span class="val"></span>
+            </li>
+        </ul>
+    </div><!--
+
+ --><div id="forecastSummary">
+        <h3>Forecast Summary</h3>
+        <ul>
+            <li class="nextHour">
+                <span class="label">Next Hour: </span>
+                <span class="val"></span>
+            </li>
+            <li class="nextDay">
+                <span class="label">Next Day: </span>
+                <span class="val"></span>
+            </li>
+            <li class="nextWeek">
+                <span class="label">Next Week: </span>
+                <span class="val"></span>
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="next7Days">
+        <h3>Next 7 Days</h3>
+        <ul>
+            <li id="day0">
+                <div class="dayOfWeek">loading...</div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day1">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day2">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day3">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day4">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day5">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+            <li id="day6">
+                <div class="dayOfWeek"></div>
+                <canvas class="icon"></canvas>
+                <div class="dayDescription"></div>
+                <div class="high"></div>
+                <div class="low"></div>
+            </li>
+        </ul>
+    </div>
+
 </div>
 
 
@@ -149,7 +191,7 @@ for (var i=0; i<7; i++) {
 $('#day0 .dayOfWeek').text('today: ');
 
 // Skycons --------------------
-    var setSkycons = function(){
+    var renderSkycons = function(){
         var icons = new Skycons({"color": "#fff"}),
                 list  = [
                     "clear-day", "clear-night", "partly-cloudy-day",
@@ -175,12 +217,18 @@ $('#day0 .dayOfWeek').text('today: ');
             $('.locationName').text(lastSnapshot.locationName);
 
         // Current Conditions ----------
-            $('.temperature').text("Temperature: " + lastSnapshot.forecast.currently.temperature + "°");
-            $('.humidity').text("Humidity: " + Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
-            $('.windSpeed').text("Wind Speed: " + lastSnapshot.forecast.currently.windSpeed + "mph");
-            $('.nextHour').text("Next Hour: " + lastSnapshot.forecast.minutely.summary);
-            $('.nextDay').text("Next 24 Hrs: " + lastSnapshot.forecast.hourly.summary);
-            $('.nextWeek').text("Next 7 Days: " + lastSnapshot.forecast.daily.summary);
+            $('#currently .icon canvas').removeClass().addClass(lastSnapshot.forecast.currently.icon);
+            $('#currently .temperature .val').text(Math.floor(lastSnapshot.forecast.currently.temperature) + "°");
+            $('#currently .summary .val').text(lastSnapshot.forecast.currently.summary);
+            $('#currently .apparentTemperature .val').text(Math.round(lastSnapshot.forecast.currently.apparentTemperature) + "°");
+
+            $('#currently .humidity .val').text(Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
+            $('#currently .windSpeed .val').text(Math.round(lastSnapshot.forecast.currently.windSpeed) + " mph");
+            $('#currently .visibility .val').text(Math.round(lastSnapshot.forecast.currently.visibility) + " mi");
+
+            $('#forecastSummary .nextHour .val').text(lastSnapshot.forecast.minutely.summary);
+            $('#forecastSummary .nextDay .val').text(lastSnapshot.forecast.hourly.summary);
+            $('#forecastSummary .nextWeek .val').text(lastSnapshot.forecast.daily.summary);
 
         // Daily Summary ----------
             for (var i=0; i<7; i++) {
@@ -191,16 +239,18 @@ $('#day0 .dayOfWeek').text('today: ');
         // Daily Highs and Lows ----------
             for (var i=0; i<7; i++) {
                 var ID = "#day"+i+" .high";
-                $(ID).text(lastSnapshot.forecast.daily.data[i].temperatureMax);
+                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMax) + "°");
                 var ID = "#day"+i+" .low";
-                $(ID).text(lastSnapshot.forecast.daily.data[i].temperatureMin);
+                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMin) + "°");
             }
 
         // Daily Icon ----------
             for (var i=0; i<7; i++) {
                 var ID = "#day"+i+" canvas";
                 $(ID).removeClass().addClass(lastSnapshot.forecast.daily.data[i].icon);
-            } setSkycons();
+            }
+
+            renderSkycons();
 
         }, function (errorObject) {
             console.log("The read failed: " + errorObject.code);
@@ -210,13 +260,17 @@ $('#day0 .dayOfWeek').text('today: ');
 // Other Global Variables -------------------
     var fail = function(failurePoint){ return (console.log("Failure: " + failurePoint)) },
         win = function(){ return (console.log("Success!")) },
-        showResults = function(){ $('#results').css('display','block') },
-        hideResults = function(){ $('#results').css('display','none') };
+        showResults = function(){ $('#results').show();
+                                  $('#loadingResults').hide()},
+        hideResults = function(){ $('#results').hide();
+                                  $('#loadingResults').show()};
 
 
 // Putting Everything together -------------------
     $(document).ready(function(){
-        hideResults();
+//        populateHtml();
+//        showResults();
+        hideResults;
         $('#locationInput').keyup(function(e) {
             locationInput = $('#locationInput').val().toLowerCase();
             if (e.keyCode == 13) {
@@ -235,7 +289,9 @@ $('#day0 .dayOfWeek').text('today: ');
                         fireBase.child("forecast").set(weatherData);
                         populateHtml();
                         showResults();
-                    }) .error(function(){ fail("getting forecast.io JSON data."); });
+                    })
+                    .success(function(){ win("Fetched and Populated the Forecast."); })
+                    .error(function(){ fail("getting forecast.io JSON data."); });
                 }).error(function(){ fail("getting location JSON data."); });
                 $('#locationInput').val('');
             }
