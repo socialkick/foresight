@@ -27,7 +27,6 @@
     <h2 class="locationName"><span style="font-size:0.6em; font-weight:normal;">Loading Last Search...</span></h2>
 
     <hr><b>Current Conditions</b><hr>
-    <!--<p class="timestamp"></p>-->
     <p class="temperature"></p>
     <p class="humidity"></p>
     <p class="windSpeed"></p>
@@ -39,35 +38,56 @@
     <p class="nextWeek"></p>
     <br>
 
-    <hr><b>Detailed Forecast</b><hr>
-    <ul>
-        <li id="today">
+    <hr><b>7-Day Forecast</b><hr>
+    <ul id="dayList">
+        <li id="day0">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day1">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day2">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day3">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day4">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day5">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
         <li id="day6">
             <div class="dayOfWeek"></div>
+            <canvas class="icon"></canvas>
             <div class="dayDescription"></div>
+            <div class="high"></div>
+            <div class="low"></div>
         </li>
     </ul>
 </div>
@@ -76,6 +96,7 @@
 <script src="js/modernizr-2.8.3.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+<script src="js/skycons.js"></script>
 <script src="js/main.js"></script>
 
 
@@ -118,22 +139,42 @@
 // Time Variables --------------------
     var date = new Date(),
         today = date.getDay(),
-        dayNames = ["sun","mon","tue","wed","thu","fri","sat"];
-    $('#today .dayOfWeek').text('today');
-    for (var i=0; i<7; i++){
-        var ID = "#day"+i+" .dayOfWeek",
-                dayNumber = today+i;
-        if (dayNumber > 6) { dayNumber -=7 }
-        $(ID).text(dayNames[dayNumber]);
-    }
+        dayNames = ['sun','mon','tue','wed','thu','fri','sat'];
+for (var i=0; i<7; i++) {
+    var ID = "#day"+i+" .dayOfWeek",
+            dayNumber = today+i;
+    if (dayNumber > 6) { dayNumber -=7 }
+    $(ID).text(dayNames[dayNumber] + ': ');
+}
+$('#day0 .dayOfWeek').text('today: ');
 
-// Other Global Variables --------------------
+// Skycons --------------------
+    var setSkycons = function(){
+        var icons = new Skycons({"color": "#fff"}),
+                list  = [
+                    "clear-day", "clear-night", "partly-cloudy-day",
+                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                    "fog" ];
+        for(var i = list.length; i--; )
+            icons.set(list[i], list[i]);
+        icons.play();
+        for(i = list.length; i--; ) {
+            var weatherType = list[i],
+                    elements = document.getElementsByClassName( weatherType );
+            for (e = elements.length; e--;){
+                icons.set( elements[e], weatherType );
+            }
+        }
+    };
+
+
+// Populating the HTML --------------------
     var populateHtml = function() {
         fireBase.on("value", function (snapshot) {
             var lastSnapshot = snapshot.val();
             $('.locationName').text(lastSnapshot.locationName);
 
-            // Current Conditions ----------
+        // Current Conditions ----------
             $('.temperature').text("Temperature: " + lastSnapshot.forecast.currently.temperature + "°");
             $('.humidity').text("Humidity: " + Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
             $('.windSpeed').text("Wind Speed: " + lastSnapshot.forecast.currently.windSpeed + "mph");
@@ -141,17 +182,33 @@
             $('.nextDay').text("Next 24 Hrs: " + lastSnapshot.forecast.hourly.summary);
             $('.nextWeek').text("Next 7 Days: " + lastSnapshot.forecast.daily.summary);
 
-            // Daily Conditions ----------
+        // Daily Summary ----------
             for (var i=0; i<7; i++) {
                 var ID = "#day"+i+" .dayDescription";
                 $(ID).text(lastSnapshot.forecast.daily.data[i].summary);
             }
 
+        // Daily Highs and Lows ----------
+            for (var i=0; i<7; i++) {
+                var ID = "#day"+i+" .high";
+                $(ID).text(lastSnapshot.forecast.daily.data[i].temperatureMax);
+                var ID = "#day"+i+" .low";
+                $(ID).text(lastSnapshot.forecast.daily.data[i].temperatureMin);
+            }
+
+        // Daily Icon ----------
+            for (var i=0; i<7; i++) {
+                var ID = "#day"+i+" canvas";
+                $(ID).removeClass().addClass(lastSnapshot.forecast.daily.data[i].icon);
+            } setSkycons();
+
         }, function (errorObject) {
             console.log("The read failed: " + errorObject.code);
         });
-    },
-        fail = function(failurePoint){ return (console.log("Failure: " + failurePoint)) },
+    };
+
+// Other Global Variables -------------------
+    var fail = function(failurePoint){ return (console.log("Failure: " + failurePoint)) },
         win = function(){ return (console.log("Success!")) },
         showResults = function(){ $('#results').css('display','block') },
         hideResults = function(){ $('#results').css('display','none') };
@@ -159,6 +216,7 @@
 
 // Putting Everything together -------------------
     $(document).ready(function(){
+        hideResults();
         $('#locationInput').keyup(function(e) {
             locationInput = $('#locationInput').val().toLowerCase();
             if (e.keyCode == 13) {

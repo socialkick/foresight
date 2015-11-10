@@ -64,7 +64,7 @@ html {
 body {
     position: relative;
     min-height: 100%;
-    padding: 5em 0 0 !important;
+    padding: 5em 0 !important;
 }
     h1, h2, h3, h4, h5, p {
         margin: 0.2em 0 0;
@@ -203,6 +203,31 @@ header {
         display: none;
     }
 
+
+#dayList {
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+    #dayList .dayOfWeek, #dayList .dayDescription, #dayList .high, #dayList .low {
+        display: inline-block;
+    }
+    .dayOfWeek {
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .dayDescription {
+    }
+    #dayList .high, #dayList .low {
+        padding: 0 2px;
+    }
+
+
+canvas {
+    height: 2em;
+    width: auto;
+}
 
 
 
