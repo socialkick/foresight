@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -20,13 +20,13 @@
 </div>
 <br>
 
-<input id="locationInput" type="search" placeholder="Enter Location" autofocus />
+<input id="hereInput" type="search" placeholder="Enter Location" autofocus />
 <p class="errorMessage"></p>
 <br><br>
 
 <div id="userAlert">Fetching Forecast...</div>
 <div id="results">
-    <h2 class="locationName"></h2>
+    <h2 class="locationName" translate="yes"></h2>
 
     <div id="currently">
         <h3>Right Now</h3>
@@ -84,53 +84,54 @@
                 <div class="dayOfWeek">loading...</div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day1">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day2">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day3">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day4">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day5">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
             <li id="day6">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="high"></div>
                 <div class="low"></div>
+                <div class="high"></div>
             </li>
         </ul>
     </div>
+
 
 </div>
 
@@ -143,31 +144,17 @@
 
 
 <script>
-// OpenCageData variables - http://geocoder.opencagedata.com/ --------------------
-    var ocdApiKey = "4ace6317360a3946395ae4d807e84cd1",
-        ocdApiUrl = "http://api.opencagedata.com/geocode/v1/json?q=",
-        ocdRequestUrl = null,
-        locationData = null,
-        locationName = null,
-        locationInput = null,
-        inputFormatting = function(){
-            var checkName = function(input){
-                if ( input.city !== undefined ) { locationName = input.city; }
-                else if ( locationData.results[1].components.city !== undefined ) { locationName = locationData.results[1].components.city; }
-                else if ( input.administrative !== undefined ) { locationName = input.administrative }
-                else if ( input.county !== undefined ) { locationName = input.county; }
-                else if ( input.state !== undefined ) { locationName = input.state; }
-                else if ( input.country!== undefined ) { locationName = input.country; }
-                else fail("Couldn't find data for that location.");
-                console.log(locationName);
-            }; checkName(locationData.results[0].components);
-            var locationExtra = '';
-            var checkState = function(data){
-                if ( locationName !== data.state && data.state !== undefined ) { locationExtra = ", " + data.state }
-                else if ( locationName == data.state && data.country_code !== undefined ) { locationExtra = ", " + (data.country_code).toUpperCase() }
-            }; checkState(locationData.results[0].components);
-            locationName = locationName + locationExtra;
-        };
+
+//  HERE Geocoding API - https://developer.here.com/rest-apis/documentation/geocoder --------------------
+    var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
+        hereAppCode = "tfNG7bDEiDsZki_YRaTDfQ",
+        hereInput = null,
+        hereUrl = "http://geocoder.api.here.com/6.2/search.json?" + "lg=eng" + "&searchtext=",
+        hereRequestURL = null,
+        hereResult = null,
+        lat = null,
+        lng = null,
+        locationName = null;
 
 // Forecast.Io variables - https://developer.forecast.io/ --------------------
     var fcApiUrl = "https://api.forecast.io/forecast",
@@ -214,12 +201,10 @@ $('#day0 .dayOfWeek').text('today: ');
 // Populating the HTML --------------------
     var populateHtml = function(input) {
 
-        if (input.minutely === undefined) {
-            userAlert("Sorry, please try a different location.");
-            fail("Couldn't find data for that location.");
-        }
-
-        $('.locationName').text(locationName);
+        $('.locationName').text(hereResult.Response.View[0].Result[0].Location.Address.Label);
+        if ( (hereResult.Response.View[0].Result[0].Location.Address.Label).length < 20 )
+           { $('h2.locationName').css('font-size','3.2em') }
+        else { $('h2.locationName').css('font-size','2.5em') }
 
     // Current Conditions ----------
         $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
@@ -231,7 +216,9 @@ $('#day0 .dayOfWeek').text('today: ');
         $('#currently .windSpeed .val').text(Math.round(input.currently.windSpeed) + " mph");
         $('#currently .visibility .val').text(Math.round(input.currently.visibility) + " mi");
 
-        $('#forecastSummary .nextHour .val').text(input.minutely.summary);
+        if (input.minutely) {
+            $('#forecastSummary .nextHour .val').text(input.minutely.summary);
+        } else {$('#forecastSummary .nextHour .val').text("[no data available]")}
         $('#forecastSummary .nextDay .val').text(input.hourly.summary);
         $('#forecastSummary .nextWeek .val').text(input.daily.summary);
 
@@ -266,30 +253,29 @@ $('#day0 .dayOfWeek').text('today: ');
 
 // Putting Everything together -------------------
     $(document).ready(function(){
-        $('#locationInput').keyup(function(e) {
-            locationInput = $('#locationInput').val().toLowerCase();
+        $('#hereInput').keyup(function(e) {
+            hereInput = $('#hereInput').val().toLowerCase();
             if (e.keyCode == 13) {
                 hideResults();
-                $('#locationInput').val('');
-                ocdRequestUrl = ocdApiUrl + locationInput + "&key=" + ocdApiKey;
+                hereInput = $('#hereInput').val();
+                $('#hereInput').val('');
+                hereRequestURL = hereUrl + hereInput + "&app_code=" + hereAppCode + "&app_id=" + hereAppId;
                 $.ajax({
-                    url: ocdRequestUrl,
+                    url: (hereRequestURL),
                     dataType: 'json',
-                    success: (function (data){
-                        locationData = data;
-                        if (locationData.results.length == 0) {
-                            userAlert("Sorry, we couldn't find that location.");
-                            fail("No location results found.");
-                        }
-                        inputFormatting();
-                        var lat = locationData.results[0].geometry.lat,
-                            lng = locationData.results[0].geometry.lng;
+                    success: (function(data){
+                        hereResult = data;
+                        if (hereResult.Response.View[0]) {
+                            lat = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Latitude;
+                            lng = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Longitude;
+                        } else { userAlert("Please try a different location."); fail("Couldn't get Lat/Lng data.") }
                         fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
                         $.ajax({
                             url: fcRequestUrl,
                             dataType: 'json',
                             success: (function(data){
                                 weatherData = data;
+                                console.log(weatherData);
                                 populateHtml(weatherData);
                                 showResults();
                                 win("Fetched and Populated the Forecast.");
