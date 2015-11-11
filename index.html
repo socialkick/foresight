@@ -24,7 +24,7 @@
 <p class="errorMessage"></p>
 <br><br>
 
-<div id="loadingResults">Fetching Forecast...</div>
+<div id="userAlert">Fetching Forecast...</div>
 <div id="results">
     <h2 class="locationName"></h2>
 
@@ -158,6 +158,7 @@
                 else if ( input.county !== undefined ) { locationName = input.county; }
                 else if ( input.state !== undefined ) { locationName = input.state; }
                 else if ( input.country!== undefined ) { locationName = input.country; }
+                else fail("Couldn't find data for that location.");
                 console.log(locationName);
             }; checkName(locationData.results[0].components);
             var locationExtra = '';
@@ -213,6 +214,13 @@ $('#day0 .dayOfWeek').text('today: ');
 // Populating the HTML --------------------
     var populateHtml = function(input) {
 
+        if (input.minutely === undefined) {
+            userAlert("Sorry, please try a different location.");
+            fail("Couldn't find data for that location.");
+        }
+
+        $('.locationName').text(locationName);
+
     // Current Conditions ----------
         $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
         $('#currently .temperature .val').text(Math.floor(input.currently.temperature) + "°");
@@ -252,11 +260,9 @@ $('#day0 .dayOfWeek').text('today: ');
 // Other Global Variables -------------------
     var fail = function(failurePoint){ return (console.log("Failure: " + failurePoint)) },
         win = function(){ return (console.log("Success!")) },
-        showResults = function(){ $('#results').show();
-                                  $('#loadingResults').hide()},
-        hideResults = function(){ $('#results').hide();
-                                  $('#loadingResults').show()};
-
+        userAlert = function(message){ $('#userAlert').show().text(message) },
+        showResults = function(){ $('#results').show(); $('#userAlert').hide(); },
+        hideResults = function(){ $('#results').hide(); userAlert("Fetching Forecast...") };
 
 // Putting Everything together -------------------
     $(document).ready(function(){
@@ -264,22 +270,42 @@ $('#day0 .dayOfWeek').text('today: ');
             locationInput = $('#locationInput').val().toLowerCase();
             if (e.keyCode == 13) {
                 hideResults();
-                ocdRequestUrl = ocdApiUrl + locationInput + "&key=" + ocdApiKey;
-                $.getJSON(ocdRequestUrl, function(data) {
-                    locationData = data;
-                    inputFormatting();
-                    var lat = locationData.results[0].geometry.lat,
-                        lng = locationData.results[0].geometry.lng;
-                    fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
-                    $.getJSON(fcRequestUrl, function(data){
-                        weatherData = data;
-                        populateHtml(weatherData);
-                        showResults();
-                    })
-                    .success(function(){ win("Fetched and Populated the Forecast."); })
-                    .error(function(){ fail("getting forecast.io JSON data."); });
-                }).error(function(){ fail("getting location JSON data."); });
                 $('#locationInput').val('');
+                ocdRequestUrl = ocdApiUrl + locationInput + "&key=" + ocdApiKey;
+                $.ajax({
+                    url: ocdRequestUrl,
+                    dataType: 'json',
+                    success: (function (data){
+                        locationData = data;
+                        if (locationData.results.length == 0) {
+                            userAlert("Sorry, we couldn't find that location.");
+                            fail("No location results found.");
+                        }
+                        inputFormatting();
+                        var lat = locationData.results[0].geometry.lat,
+                            lng = locationData.results[0].geometry.lng;
+                        fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
+                        $.ajax({
+                            url: fcRequestUrl,
+                            dataType: 'json',
+                            success: (function(data){
+                                weatherData = data;
+                                populateHtml(weatherData);
+                                showResults();
+                                win("Fetched and Populated the Forecast.");
+                            }),
+                            timeout: 4000,
+                            error: (function(){
+                                fail("getting forecast.io JSON data.");
+                            })
+                        });
+                    }),
+                    timeout: 4000,
+                    error: (function(){
+                        userAlert("Sorry, server error. Please try again.");
+                        fail("Timeout while getting location data.");
+                    })
+                });
             }
         });
     });

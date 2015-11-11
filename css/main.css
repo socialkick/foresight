@@ -75,6 +75,7 @@ body {
 
     h1, h2, h3, h4, h5, p {
         margin: 0.2em 0 0;
+        padding: 0 0.5em;
         font-weight: normal;
     }
     h1 {
@@ -236,7 +237,7 @@ header {
 #results {
     display: none;
 }
-    #loadingResults {
+    #userAlert {
         display: none;
     }
 
@@ -349,7 +350,7 @@ footer {
 
 @media (max-width:850px) {
     body { padding: 2em 1em; }
-    h3 { margin: 1em 0; }
+    h3 { margin: 2em 0 1em; }
     #forecastSummary ul {
         text-align: center;
     }
