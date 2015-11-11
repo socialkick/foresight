@@ -84,50 +84,43 @@
                 <div class="dayOfWeek">loading...</div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day1">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day2">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day3">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day4">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day5">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
             <li id="day6">
                 <div class="dayOfWeek"></div>
                 <canvas class="icon"></canvas>
                 <div class="dayDescription"></div>
-                <div class="low"></div>
-                <div class="high"></div>
+                <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
             </li>
         </ul>
     </div>
@@ -146,97 +139,120 @@
 <script>
 
 //  HERE Geocoding API - https://developer.here.com/rest-apis/documentation/geocoder --------------------
-    var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
-        hereAppCode = "tfNG7bDEiDsZki_YRaTDfQ",
-        hereInput = null,
-        hereUrl = "http://geocoder.api.here.com/6.2/search.json?" + "lg=eng" + "&searchtext=",
-        hereRequestURL = null,
-        hereResult = null,
-        lat = null,
-        lng = null,
-        locationName = null;
+        var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
+                hereAppCode = "tfNG7bDEiDsZki_YRaTDfQ",
+                hereInput = null,
+                hereUrl = "http://geocoder.api.here.com/6.2/search.json?" + "lg=eng" + "&searchtext=",
+                hereRequestURL = null,
+                hereResult = null,
+                lat = null,
+                lng = null,
+                locationName = null;
 
 // Forecast.Io variables - https://developer.forecast.io/ --------------------
-    var fcApiUrl = "https://api.forecast.io/forecast",
-        fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
-        fcRequestUrl = null,
-        weatherData = null;
+        var fcApiUrl = "https://api.forecast.io/forecast",
+                fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
+                fcRequestUrl = null,
+                weatherData = null;
 
 // Firebase variables - https://foresightweather.firebaseio.com/ --------------------
-    var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
-        dataObject = null;
+        var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
+                dataObject = null;
 
 // Time Variables --------------------
-    var date = new Date(),
-        today = date.getDay(),
-        dayNames = ['sun','mon','tue','wed','thu','fri','sat'];
-for (var i=0; i<7; i++) {
-    var ID = "#day"+i+" .dayOfWeek",
-            dayNumber = today+i;
-    if (dayNumber > 6) { dayNumber -=7 }
-    $(ID).text(dayNames[dayNumber] + ': ');
-}
-$('#day0 .dayOfWeek').text('today: ');
+        var date = new Date(),
+                today = date.getDay(),
+                dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+        for (var i = 0; i < 7; i++) {
+            var ID = "#day" + i + " .dayOfWeek",
+                    dayNumber = today + i;
+            if (dayNumber > 6) {
+                dayNumber -= 7
+            }
+            $(ID).text(dayNames[dayNumber] + ': ');
+        }
+        $('#day0 .dayOfWeek').text('today: ');
 
 // Skycons --------------------
-    var renderSkycons = function(){
-        var icons = new Skycons({"color": "#fff"}),
-                list  = [
-                    "clear-day", "clear-night", "partly-cloudy-day",
-                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
-                    "fog" ];
-        for(var i = list.length; i--; )
-            icons.set(list[i], list[i]);
-        icons.play();
-        for(i = list.length; i--; ) {
-            var weatherType = list[i],
-                    elements = document.getElementsByClassName( weatherType );
-            for (e = elements.length; e--;){
-                icons.set( elements[e], weatherType );
+        var renderSkycons = function () {
+            var icons = new Skycons({"color": "#fff"}),
+                    list = [
+                        "clear-day", "clear-night", "partly-cloudy-day",
+                        "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                        "fog" ];
+            for (var i = list.length; i--;)
+                icons.set(list[i], list[i]);
+            icons.play();
+            for (i = list.length; i--;) {
+                var weatherType = list[i],
+                        elements = document.getElementsByClassName(weatherType);
+                for (e = elements.length; e--;) {
+                    icons.set(elements[e], weatherType);
+                }
             }
-        }
-    };
-
+        };
 
 // Populating the HTML --------------------
     var populateHtml = function(input) {
 
-        $('.locationName').text(hereResult.Response.View[0].Result[0].Location.Address.Label);
-        if ( (hereResult.Response.View[0].Result[0].Location.Address.Label).length < 20 )
-           { $('h2.locationName').css('font-size','3.2em') }
-        else { $('h2.locationName').css('font-size','2.5em') }
+            $('.locationName').text(hereResult.Response.View[0].Result[0].Location.Address.Label);
+            if ((hereResult.Response.View[0].Result[0].Location.Address.Label).length < 20) {
+                $('h2.locationName').css('font-size', '3.2em')
+            }
+            else {
+                $('h2.locationName').css('font-size', '2.5em')
+            }
 
-    // Current Conditions ----------
-        $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
-        $('#currently .temperature .val').text(Math.floor(input.currently.temperature) + "°");
-        $('#currently .summary .val').text(input.currently.summary);
-        $('#currently .apparentTemperature .val').text(Math.round(input.currently.apparentTemperature) + "°");
+            // Current Conditions ----------
+            $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
+            $('#currently .temperature .val').text(Math.floor(input.currently.temperature) + "°");
+            $('#currently .summary .val').text(input.currently.summary);
+            $('#currently .apparentTemperature .val').text(Math.round(input.currently.apparentTemperature) + "°");
 
-        $('#currently .humidity .val').text(Math.floor((input.currently.humidity) * 100) + "%");
-        $('#currently .windSpeed .val').text(Math.round(input.currently.windSpeed) + " mph");
-        $('#currently .visibility .val').text(Math.round(input.currently.visibility) + " mi");
+            $('#currently .humidity .val').text(Math.floor((input.currently.humidity) * 100) + "%");
+            $('#currently .windSpeed .val').text(Math.round(input.currently.windSpeed) + " mph");
+            $('#currently .visibility .val').text(Math.round(input.currently.visibility) + " mi");
 
-        if (input.minutely) {
-            $('#forecastSummary .nextHour .val').text(input.minutely.summary);
-        } else {$('#forecastSummary .nextHour .val').text("[no data available]")}
-        $('#forecastSummary .nextDay .val').text(input.hourly.summary);
-        $('#forecastSummary .nextWeek .val').text(input.daily.summary);
+            if (input.minutely) {
+                $('#forecastSummary .nextHour .val').text(input.minutely.summary);
+            } else {
+                $('#forecastSummary .nextHour .val').text("[no data available]")
+            }
+            $('#forecastSummary .nextDay .val').text(input.hourly.summary);
+            $('#forecastSummary .nextWeek .val').text(input.daily.summary);
 
-    // Daily Summary ----------
-        for (var i=0; i<7; i++) {
-            var ID = "#day"+i+" .dayDescription";
-            $(ID).text(input.daily.data[i].summary);
-        }
+            // Daily Summary ----------
+            for (var i = 0; i < 7; i++) {
+                var ID = "#day" + i + " .dayDescription";
+                $(ID).text(input.daily.data[i].summary);
+            }
 
     // Daily Highs and Lows ----------
+
+        var totalRange = [],
+            dailyRange = [];
         for (var i=0; i<7; i++) {
-            var ID = "#day"+i+" .high";
-            $(ID).text(Math.round(input.daily.data[i].temperatureMax) + "°");
-            var ID = "#day"+i+" .low";
-            $(ID).text(Math.round(input.daily.data[i].temperatureMin) + "°");
+            var tempMax = (Math.round(input.daily.data[i].temperatureMax)),
+                tempMin = (Math.round(input.daily.data[i].temperatureMin));
+            var ID = "#day"+i;
+            $(ID).data('high',tempMax).data('low',tempMin);
+            $(ID + ' .high').text($(ID).data('high') + "°");
+            $(ID + ' .low').text($(ID).data('low') + "°");
+            totalRange.push(tempMax, tempMin);
+        }
+        totalRange.sort(function(a,b){ return a - b; });
+        var weekRange = (totalRange[totalRange.length-1]) - (totalRange[0]);
+        for (var i=0; i<7; i++) {
+            var ID = "#day"+ i,
+                rangeMultiplier = 100/weekRange,
+                spanWidth = ($(ID).data('high'))-($(ID).data('low')),
+                tempMin = (Math.round(input.daily.data[i].temperatureMin)),
+                shift = (tempMin - totalRange[0])*rangeMultiplier;
+            $(ID+' .tempBar .bar').css('width',(spanWidth*rangeMultiplier*(0.6))+"%");
+            $(ID+' .tempBar .low').css('padding-left',shift);
         }
 
-    // Daily Icon ----------
+        // Daily Icon ----------
         for (var i=0; i<7; i++) {
             var ID = "#day"+i+" canvas";
             $(ID).removeClass().addClass(input.daily.data[i].icon);
@@ -265,7 +281,7 @@ $('#day0 .dayOfWeek').text('today: ');
                     dataType: 'json',
                     success: (function(data){
                         hereResult = data;
-                        if (hereResult.Response.View[0]) {
+                        if (hereResult.Response.View[0] && hereResult.Response.View[0].Result[0].Location) {
                             lat = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Latitude;
                             lng = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Longitude;
                         } else { userAlert("Please try a different location."); fail("Couldn't get Lat/Lng data.") }
@@ -275,7 +291,6 @@ $('#day0 .dayOfWeek').text('today: ');
                             dataType: 'json',
                             success: (function(data){
                                 weatherData = data;
-                                console.log(weatherData);
                                 populateHtml(weatherData);
                                 showResults();
                                 win("Fetched and Populated the Forecast.");
