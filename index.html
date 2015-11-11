@@ -211,50 +211,42 @@ $('#day0 .dayOfWeek').text('today: ');
 
 
 // Populating the HTML --------------------
-    var populateHtml = function() {
-        fireBase.on("value", function (snapshot) {
-            var lastSnapshot = snapshot.val();
-            $('.locationName').text(lastSnapshot.locationName);
+    var populateHtml = function(input) {
 
-        // Current Conditions ----------
-            $('#currently .icon canvas').removeClass().addClass(lastSnapshot.forecast.currently.icon);
-            $('#currently .temperature .val').text(Math.floor(lastSnapshot.forecast.currently.temperature) + "°");
-            $('#currently .summary .val').text(lastSnapshot.forecast.currently.summary);
-            $('#currently .apparentTemperature .val').text(Math.round(lastSnapshot.forecast.currently.apparentTemperature) + "°");
+    // Current Conditions ----------
+        $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
+        $('#currently .temperature .val').text(Math.floor(input.currently.temperature) + "°");
+        $('#currently .summary .val').text(input.currently.summary);
+        $('#currently .apparentTemperature .val').text(Math.round(input.currently.apparentTemperature) + "°");
 
-            $('#currently .humidity .val').text(Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
-            $('#currently .windSpeed .val').text(Math.round(lastSnapshot.forecast.currently.windSpeed) + " mph");
-            $('#currently .visibility .val').text(Math.round(lastSnapshot.forecast.currently.visibility) + " mi");
+        $('#currently .humidity .val').text(Math.floor((input.currently.humidity) * 100) + "%");
+        $('#currently .windSpeed .val').text(Math.round(input.currently.windSpeed) + " mph");
+        $('#currently .visibility .val').text(Math.round(input.currently.visibility) + " mi");
 
-            $('#forecastSummary .nextHour .val').text(lastSnapshot.forecast.minutely.summary);
-            $('#forecastSummary .nextDay .val').text(lastSnapshot.forecast.hourly.summary);
-            $('#forecastSummary .nextWeek .val').text(lastSnapshot.forecast.daily.summary);
+        $('#forecastSummary .nextHour .val').text(input.minutely.summary);
+        $('#forecastSummary .nextDay .val').text(input.hourly.summary);
+        $('#forecastSummary .nextWeek .val').text(input.daily.summary);
 
-        // Daily Summary ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" .dayDescription";
-                $(ID).text(lastSnapshot.forecast.daily.data[i].summary);
-            }
+    // Daily Summary ----------
+        for (var i=0; i<7; i++) {
+            var ID = "#day"+i+" .dayDescription";
+            $(ID).text(input.daily.data[i].summary);
+        }
 
-        // Daily Highs and Lows ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" .high";
-                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMax) + "°");
-                var ID = "#day"+i+" .low";
-                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMin) + "°");
-            }
+    // Daily Highs and Lows ----------
+        for (var i=0; i<7; i++) {
+            var ID = "#day"+i+" .high";
+            $(ID).text(Math.round(input.daily.data[i].temperatureMax) + "°");
+            var ID = "#day"+i+" .low";
+            $(ID).text(Math.round(input.daily.data[i].temperatureMin) + "°");
+        }
 
-        // Daily Icon ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" canvas";
-                $(ID).removeClass().addClass(lastSnapshot.forecast.daily.data[i].icon);
-            }
-
-            renderSkycons();
-
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
+    // Daily Icon ----------
+        for (var i=0; i<7; i++) {
+            var ID = "#day"+i+" canvas";
+            $(ID).removeClass().addClass(input.daily.data[i].icon);
+        }
+        renderSkycons();
     };
 
 // Other Global Variables -------------------
@@ -268,9 +260,6 @@ $('#day0 .dayOfWeek').text('today: ');
 
 // Putting Everything together -------------------
     $(document).ready(function(){
-//        populateHtml();
-//        showResults();
-        hideResults;
         $('#locationInput').keyup(function(e) {
             locationInput = $('#locationInput').val().toLowerCase();
             if (e.keyCode == 13) {
@@ -278,16 +267,13 @@ $('#day0 .dayOfWeek').text('today: ');
                 ocdRequestUrl = ocdApiUrl + locationInput + "&key=" + ocdApiKey;
                 $.getJSON(ocdRequestUrl, function(data) {
                     locationData = data;
-                    fireBase.child("location").set(locationData);
                     inputFormatting();
-                    fireBase.child("locationName").set(locationName);
                     var lat = locationData.results[0].geometry.lat,
-                            lng = locationData.results[0].geometry.lng;
+                        lng = locationData.results[0].geometry.lng;
                     fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
                     $.getJSON(fcRequestUrl, function(data){
                         weatherData = data;
-                        fireBase.child("forecast").set(weatherData);
-                        populateHtml();
+                        populateHtml(weatherData);
                         showResults();
                     })
                     .success(function(){ win("Fetched and Populated the Forecast."); })
