@@ -45,14 +45,15 @@ textarea {
 
 html, h1, h2, h3, h4, h5, h6, li, p, input {
     -webkit-transition: 0.5s all;
-       -moz-transition: 0.5s all;
-        -ms-transition: 0.5s all;
-         -o-transition: 0.5s all;
-            transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
 }
 
 html {
     position: relative;
+    height: 100%;
     width: 100%;
     color: #fff;
     background: #0069bc;
@@ -68,39 +69,37 @@ html {
 body {
     position: relative;
     width: 100%;
-    min-height: 100%;
-    padding: 2em 3em;
     box-sizing: border-box;
 }
 
-    h1, h2, h3, h4, h5, p {
-        margin: 0.2em 0 0;
-        padding: 0 0.5em;
-        font-weight: normal;
-    }
-    h1 {
-        font-size: 1.2em;
-        margin: 0.2em 0.5em 0;
-        text-transform: uppercase;
-       }
-    h2 { font-size: 2.4em; }
-    h3 {
-        padding: 0.5em 0;
-        margin: 2em 1em 1em;
-        font-size: 1.3em;
-        text-transform: uppercase;
-        border-top: 1px solid #fff;
-        border-bottom: 1px solid #fff;
-        background: rgba(0,0,0,0.25);
-    }
-    h4 { font-size: 1.1em; }
-    h5 { font-size: 1em; }
+h1, h2, h3, h4, h5, p {
+    margin: 0;
+    padding: 0 0.5em;
+    font-weight: normal;
+}
+h1 {
+    margin-top: 1em;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+h2 { font-size: 2.4em; }
+h3 {
+    padding: 0.5em 0;
+    margin: 2em 1em 1em;
+    font-size: 1.3em;
+    text-transform: uppercase;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    background: rgba(0,0,0,0.25);
+}
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
 
-    p { font-weight: 300 }
-    a {
-        text-decoration: none;
-        color: #fff;
-    }
+p { font-weight: 300 }
+a {
+    text-decoration: none;
+    color: #fff;
+}
 
 ul {
     display: block;
@@ -113,19 +112,36 @@ ul {
 input {
     text-align: center;
     position: relative;
-    padding: 0.3em 0.5em;
-    background: rgba(0,0,0,0);
-    border: 1px solid rgba(0, 0, 0, 0.7);
-    border-radius: 0;
+    padding: 1em 0.2em;
+    background: rgba(255,255,255,0.2);
+    width: 100%;
+    border: none;
     outline: none;
     font-family: Calibri, Helvetica, sans-serif;
-    color: #bbb;
+    color: #fff;
+    box-sizing: border-box !important;
 }
 input:focus {
-    background: rgba(0,0,0,0.5);
-    color: #fff;
-
+    background: rgba(255,255,255,1);
+    color: #000;
 }
+
+aside, main {
+    display: block;
+}
+aside {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100%;
+    width: 15em;
+    background: #333;
+}
+main {
+    box-sizing: border-box;
+    padding: 2em 0 2em 15em;
+}
+
+
 
 
 #loading {
@@ -146,46 +162,48 @@ input:focus {
     -o-transition: 0.3s opacity;
     transition: 0.3s opacity;
 }
-    #loading.dormant {
-        opacity: 0;
-        visibility: hidden;
-        -webkit-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-        -moz-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-        -ms-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-        -o-transition: 0.3s opacity 0s, 0.3s visibility 0s;
-        transition: 0.3s opacity 0s, 0s visibility 0.3s;
-    }
+#loading.dormant {
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+    -moz-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+    -ms-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+    -o-transition: 0.3s opacity 0s, 0.3s visibility 0s;
+    transition: 0.3s opacity 0s, 0s visibility 0.3s;
+}
 
 #mainTitle {
-    border: 1px solid #fff;
-    padding: 0.6em;
-    width: 200px;
+    position: relative;
+    padding: 2em 0;
+    width: 100%;
     display :block;
     margin: 0 auto;
 }
+
+
 #tempToggle {
-    position: fixed;
+    position: absolute;
     display: none;
-    bottom: 0; right: 0;
+    bottom: 0;
+    width: 100%;
     color: #fff;
     cursor: pointer;
+    background: rgba(255,255,255,0.15);
 }
-    #tempToggle > * {
-        display: inline-block;
-        vertical-align: middle;
-        padding: 0.5em 0 0.8em 0;
-        background: rgba(0,0,0,0.15);
-        text-align: center;
-        width: 3em;
-        transition: 0.4s all;
-    }
-        #tempToggle > *:hover {
-            background: rgba(0,0,0,0.3);
-        }
-        #tempToggle > *.active, #tempToggle > *.active:hover {
-            background: rgba(0,0,0,0.6);
-            cursor: default;
-        }
+#tempToggle > * {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0.5em 0 0.8em 0;
+    text-align: center;
+    width: 50%;
+    transition: 0.4s all;
+}
+#tempToggle > *:hover {
+    background: rgba(255,255,255,0.2);
+}
+#tempToggle > *.active, #tempToggle > *.active:hover {
+    background: rgba(255,255,255,0.5);
+}
 
 
 .temperature .val:after, .apparentTemperature .val:after, .tempBar .low:after,.tempBar .high:after {
@@ -193,23 +211,15 @@ input:focus {
 }
 
 
-#userName {
-    display: none;
-}
-#logout, #login {
-    display: inline-block;
-}
-    li#login a:after, li#logout a:after {
-        display: none;
-    }
 
 
 #results {
     display: none;
 }
-    #userAlert {
-        display: none;
-    }
+#userAlert {
+    display: none;
+    padding: 0.5em 0;
+}
 
 
 #currently, #forecastSummary {
@@ -220,16 +230,21 @@ input:focus {
     margin: 0 auto;
 }
 
-    #currently .icon, #currently .temperature {
-        display: inline-block;
-        vertical-align: bottom;
-        font-size: 2.5em;
-    }
-    #currently .temperature {
-        font-size: 4em;
-        /*line-height: 1em;*/
-        margin-top: -0.2em;
-    }
+#currently .icon, #currently .temperature {
+    display: inline-block;
+    vertical-align: bottom;
+    font-size: 2.5em;
+}
+#currently .temperature {
+    font-size: 4em;
+    /*line-height: 1em;*/
+    margin-top: -0.2em;
+}
+#currently canvas {
+    height: 2em;
+    width: 4em;
+    margin: 0 -0.8em;
+}
 
 
 
@@ -239,14 +254,14 @@ input:focus {
     margin: -0.3em auto 0;
     text-align: left;
 }
-    #forecastSummary .label {
-        display: block;
-        padding: 0.5em 0 0;
-        line-height: 1em;
-        font-size: 1.2em;
-        font-weight: 400;
-        text-transform: uppercase;
-    }
+#forecastSummary .label {
+    display: block;
+    padding: 0.5em 0 0;
+    line-height: 1em;
+    font-size: 1.2em;
+    font-weight: 400;
+    text-transform: uppercase;
+}
 
 #next7Days ul {
     display: table;
@@ -257,59 +272,60 @@ input:focus {
     border-top: 1px solid #bbb;
     background: rgba(0,0,0,0.1);
 }
-    #next7Days li {
-        display: table-row;
-        margin: 0 auto;
-        border-bottom: 1px solid #bbb;
-    }
-    #next7Days li > div, #next7Days canvas {
-        padding: 1em 2%;
-        display: table-cell;
-        vertical-align: middle;
-    }
-    .dayOfWeek {
-        width: 2.6em;
-        text-align: right;
-        font-weight: normal;
-        text-transform: uppercase;
-    }
-    .dayDescription {
-        text-align: left;
-    }
-    #next7Days .high, #next7Days .low {
-        padding: 0 2px;
-        /*width: 30px;*/
-        width: 15%;
-        text-align: right;
-    }
-        #next7Days .high {
-            text-align: left;
-            margin-left: 2px;
-        }
+#next7Days li {
+    display: table-row;
+    margin: 0 auto;
+    border-bottom: 1px solid #bbb;
+}
+#next7Days li > div, #next7Days canvas {
+    padding: 1em 2%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.dayOfWeek {
+    width: 2.8em;
+    min-width: 60px;
+    text-align: right;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.dayDescription {
+    text-align: left;
+}
+#next7Days .high, #next7Days .low {
+    padding: 0 2px;
+    /*width: 30px;*/
+    width: 15%;
+    text-align: right;
+}
+#next7Days .high {
+    text-align: left;
+    margin-left: 2px;
+}
 
-    #next7Days .tempBar {
-        text-align: left;
-        min-width: 210px;
-        width: 30%;
-    }
-        #next7Days .tempBar > span {
-            display: inline-block;
-        }
-        #next7Days .tempBar .bar {
-            display: inline-block;
-            margin: 0 2px -1px;
-            min-width:2px;
-            height: 0.95em;
-            border-radius: 0.5em;
-            border: 1px solid #fff;
-            background: rgba(255,255,255,0.6);
-        }
+#next7Days .tempBar {
+    text-align: left;
+    min-width: 210px;
+    width: 30%;
+}
+#next7Days .tempBar > span {
+    display: inline-block;
+}
+#next7Days .tempBar .bar {
+    display: inline-block;
+    margin: 0 2px -1px;
+    min-width:2px;
+    height: 0.95em;
+    border-radius: 0.5em;
+    border: 1px solid #fff;
+    background: rgba(255,255,255,0.6);
+}
 
-
-canvas {
+#next7Days canvas {
     height: 2em;
     width: 4em;
-    margin: 0 -0.8em;
+    min-width: 60px;
+    /*margin: 0 -0.8em;*/
 }
 
 
@@ -322,13 +338,13 @@ footer {
     text-align: center;
     background: #000;
 }
-    #footerInner {
-        position: relative;
-        width: 90%;
-        display: inline-block;
-        text-align: right;
-        font-size: 0.8em;
-    }
+#footerInner {
+    position: relative;
+    width: 90%;
+    display: inline-block;
+    text-align: right;
+    font-size: 0.8em;
+}
 
 
 
@@ -344,9 +360,9 @@ footer {
 
 
 
-@media (max-width:850px) {
+@media (max-width:1200px) {
     body {
-        padding: 2em 0;
+        padding: 0;
     }
 
     h3 {
@@ -357,7 +373,39 @@ footer {
         text-align: center;
     }
 }
-@media (max-width:767px) {
+@media (max-width:850px) {
+
+    h1 {
+        margin: 0 auto;
+    }
+    h2 {
+        margin-top: 1em;
+    }
+    #mainTitle {
+        padding: 1em 0;
+    }
+    input {
+        padding: 0.7em 0.2em;
+    }
+    aside, main, #tempToggle {
+        display: block;
+        padding: 0;
+        position: relative;
+        width: 100%;
+    }
+    #tempToggle {
+        display: none;
+    }
+    aside {
+        height: auto;
+        background: #333;
+    }
+}
+
+
+
+
+@media (max-width:700px) {
 
     #currently, #forecastSummary, #next7Days {
         display: block;
@@ -374,6 +422,12 @@ footer {
     }
 }
 
+
+
+
+
+
+
 @media (max-width:600px) {
     header {
         position: relative;
@@ -386,49 +440,49 @@ footer {
         float: none;
         width: auto;
     }
-        #logo { padding-bottom: 0 }
+    #logo { padding-bottom: 0 }
 
-#next7Days ul {
-    display: block;
-    background: none;
-    border: none;
-}
+    #next7Days ul {
+        display: block;
+        background: none;
+        border: none;
+    }
     #next7Days ul li {
         display: block;
         border: none;
         margin-bottom: 1em;
     }
-        #next7Days ul li > * {
-            display: inline-block;
-            vertical-align: middle;
-            padding: 5px 1%;
-        }
-        #next7Days .dayOfWeek, #next7Days canvas {
-            font-size: 1.3em;
-            padding-bottom: 0;
-        }
-        #next7Days canvas {
-            width: 4em;
-            margin: 0 -0.7em;
-        }
-        #next7Days .dayDescription, #next7Days .tempBar {
-            display: block;
-            margin: 0 auto;
-            padding: 0.3em 0;
-            width: 90%;
-            text-align: center;
-        }
-            #next7Days .tempBar {
-                text-align: left !important;
-                width: 80%;
-                border-top: 1px solid #bbb;
-                border-bottom: 1px solid #bbb;
-            }
-                #next7Days .tempBar:before {
-                    content: '';
-                    display: inline-block;
-                    width: 10%;
-                }
+    #next7Days ul li > * {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 5px 1%;
+    }
+    #next7Days .dayOfWeek, #next7Days canvas {
+        font-size: 1.3em;
+        padding-bottom: 0;
+    }
+    #next7Days canvas {
+        width: 4em;
+        margin: 0 -0.7em;
+    }
+    #next7Days .dayDescription, #next7Days .tempBar {
+        display: block;
+        margin: 0 auto;
+        padding: 0.3em 0;
+        width: 90%;
+        text-align: center;
+    }
+    #next7Days .tempBar {
+        text-align: left !important;
+        width: 80%;
+        border-top: 1px solid #bbb;
+        border-bottom: 1px solid #bbb;
+    }
+    #next7Days .tempBar:before {
+        content: '';
+        display: inline-block;
+        width: 10%;
+    }
 }
 
 @media(max-height:600px) {
@@ -541,9 +595,9 @@ footer {
 }
 
 @media print,
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 1.25dppx),
-       (min-resolution: 120dpi) {
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 1.25dppx),
+(min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
 }
 
