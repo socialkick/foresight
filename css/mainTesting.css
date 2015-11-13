@@ -53,6 +53,7 @@ html, h1, h2, h3, h4, h5, h6, li, p, input {
 
 html {
     position: relative;
+    height: 100%;
     width: 100%;
     color: #fff;
     background: #0069bc;
@@ -68,19 +69,17 @@ html {
 body {
     position: relative;
     width: 100%;
-    min-height: 100%;
-    padding: 2em 3em;
     box-sizing: border-box;
 }
 
     h1, h2, h3, h4, h5, p {
-        margin: 0.2em 0 0;
+        margin: 0;
         padding: 0 0.5em;
         font-weight: normal;
     }
     h1 {
+        margin-top: 1em;
         font-size: 1.2em;
-        margin: 0.2em 0.5em 0;
         text-transform: uppercase;
        }
     h2 { font-size: 2.4em; }
@@ -113,19 +112,36 @@ ul {
 input {
     text-align: center;
     position: relative;
-    padding: 0.3em 0.5em;
-    background: rgba(0,0,0,0);
-    border: 1px solid rgba(0, 0, 0, 0.7);
-    border-radius: 0;
+    padding: 1em 0.2em;
+    background: rgba(255,255,255,0.2);
+    width: 100%;
+    border: none;
     outline: none;
     font-family: Calibri, Helvetica, sans-serif;
-    color: #bbb;
+    color: #fff;
+    box-sizing: border-box !important;
 }
 input:focus {
-    background: rgba(0,0,0,0.5);
-    color: #fff;
-
+    background: rgba(255,255,255,1);
+    color: #000;
 }
+
+aside, main {
+    display: block;
+}
+aside {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100%;
+    width: 15em;
+    background: #333;
+}
+main {
+    box-sizing: border-box;
+    padding: 2em 0 2em 15em;
+}
+
+
 
 
 #loading {
@@ -157,34 +173,36 @@ input:focus {
     }
 
 #mainTitle {
-    border: 1px solid #fff;
-    padding: 0.6em;
-    width: 200px;
+    position: relative;
+    padding: 2em 0;
+    width: 100%;
     display :block;
     margin: 0 auto;
 }
+
+
 #tempToggle {
-    position: fixed;
+    position: absolute;
     display: none;
-    bottom: 0; right: 0;
+    bottom: 0;
+    width: 100%;
     color: #fff;
     cursor: pointer;
+    background: rgba(255,255,255,0.15);
 }
     #tempToggle > * {
         display: inline-block;
         vertical-align: middle;
         padding: 0.5em 0 0.8em 0;
-        background: rgba(0,0,0,0.15);
         text-align: center;
-        width: 3em;
+        width: 50%;
         transition: 0.4s all;
     }
         #tempToggle > *:hover {
-            background: rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.2);
         }
         #tempToggle > *.active, #tempToggle > *.active:hover {
-            background: rgba(0,0,0,0.6);
-            cursor: default;
+            background: rgba(255,255,255,0.5);
         }
 
 
@@ -193,23 +211,15 @@ input:focus {
 }
 
 
-#userName {
-    display: none;
-}
-#logout, #login {
-    display: inline-block;
-}
-    li#login a:after, li#logout a:after {
-        display: none;
-    }
 
 
 #results {
     display: none;
 }
-    #userAlert {
-        display: none;
-    }
+#userAlert {
+    display: none;
+    padding: 0.5em 0;
+}
 
 
 #currently, #forecastSummary {
@@ -229,6 +239,11 @@ input:focus {
         font-size: 4em;
         /*line-height: 1em;*/
         margin-top: -0.2em;
+    }
+    #currently canvas {
+        height: 2em;
+        width: 4em;
+        margin: 0 -0.8em;
     }
 
 
@@ -268,7 +283,8 @@ input:focus {
         vertical-align: middle;
     }
     .dayOfWeek {
-        width: 2.6em;
+        width: 2.8em;
+        min-width: 60px;
         text-align: right;
         font-weight: normal;
         text-transform: uppercase;
@@ -305,12 +321,12 @@ input:focus {
             background: rgba(255,255,255,0.6);
         }
 
-
-canvas {
-    height: 2em;
-    width: 4em;
-    margin: 0 -0.8em;
-}
+    #next7Days canvas {
+        height: 2em;
+        width: 4em;
+        min-width: 60px;
+        /*margin: 0 -0.8em;*/
+    }
 
 
 
@@ -344,9 +360,9 @@ footer {
 
 
 
-@media (max-width:850px) {
+@media (max-width:1200px) {
     body {
-        padding: 2em 0;
+        padding: 0;
     }
 
     h3 {
@@ -357,7 +373,39 @@ footer {
         text-align: center;
     }
 }
-@media (max-width:767px) {
+@media (max-width:850px) {
+
+    h1 {
+        margin: 0 auto;
+    }
+    h2 {
+        margin-top: 1em;
+    }
+    #mainTitle {
+        padding: 1em 0;
+    }
+    input {
+        padding: 0.7em 0.2em;
+    }
+    aside, main, #tempToggle {
+        display: block;
+        padding: 0;
+        position: relative;
+        width: 100%;
+    }
+    #tempToggle {
+        display: none;
+    }
+    aside {
+        height: auto;
+        background: #333;
+    }
+}
+
+
+
+
+@media (max-width:700px) {
 
     #currently, #forecastSummary, #next7Days {
         display: block;
@@ -373,6 +421,12 @@ footer {
         width: 90%;
     }
 }
+
+
+
+
+
+
 
 @media (max-width:600px) {
     header {
