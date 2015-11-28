@@ -45,10 +45,10 @@ textarea {
 
 html, h1, h2, h3, h4, h5, h6, li, p, input {
     -webkit-transition: 0.5s all;
-    -moz-transition: 0.5s all;
-    -ms-transition: 0.5s all;
-    -o-transition: 0.5s all;
-    transition: 0.5s all;
+       -moz-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+         -o-transition: 0.5s all;
+            transition: 0.5s all;
 }
 
 html {
@@ -72,34 +72,34 @@ body {
     box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, p {
-    margin: 0;
-    padding: 0 0.5em;
-    font-weight: normal;
-}
-h1 {
-    margin-top: 1em;
-    font-size: 1.2em;
-    text-transform: uppercase;
-}
-h2 { font-size: 2.4em; }
-h3 {
-    padding: 0.5em 0;
-    margin: 2em 1em 1em;
-    font-size: 1.3em;
-    text-transform: uppercase;
-    border-top: 1px solid #fff;
-    border-bottom: 1px solid #fff;
-    background: rgba(0,0,0,0.25);
-}
-h4 { font-size: 1.1em; }
-h5 { font-size: 1em; }
+    h1, h2, h3, h4, h5, p {
+        margin: 0;
+        padding: 0 0.5em;
+        font-weight: normal;
+    }
+    h1 {
+        margin-top: 1em;
+        font-size: 1.2em;
+        text-transform: uppercase;
+       }
+    h2 { font-size: 2.4em; }
+    h3 {
+        padding: 0.5em 0;
+        margin: 2em 1em 1em;
+        font-size: 1.3em;
+        text-transform: uppercase;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        background: rgba(0,0,0,0.25);
+    }
+    h4 { font-size: 1.1em; }
+    h5 { font-size: 1em; }
 
-p { font-weight: 300 }
-a {
-    text-decoration: none;
-    color: #fff;
-}
+    p { font-weight: 300 }
+    a {
+        text-decoration: none;
+        color: #fff;
+    }
 
 ul {
     display: block;
@@ -162,15 +162,15 @@ main {
     -o-transition: 0.3s opacity;
     transition: 0.3s opacity;
 }
-#loading.dormant {
-    opacity: 0;
-    visibility: hidden;
-    -webkit-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-    -moz-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-    -ms-transition: 0.3s opacity 0s, 0s visibility 0.3s;
-    -o-transition: 0.3s opacity 0s, 0.3s visibility 0s;
-    transition: 0.3s opacity 0s, 0s visibility 0.3s;
-}
+    #loading.dormant {
+        opacity: 0;
+        visibility: hidden;
+        -webkit-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+        -moz-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+        -ms-transition: 0.3s opacity 0s, 0s visibility 0.3s;
+        -o-transition: 0.3s opacity 0s, 0.3s visibility 0s;
+        transition: 0.3s opacity 0s, 0s visibility 0.3s;
+    }
 
 #mainTitle {
     position: relative;
@@ -190,20 +190,20 @@ main {
     cursor: pointer;
     background: rgba(255,255,255,0.15);
 }
-#tempToggle > * {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 0.5em 0 0.8em 0;
-    text-align: center;
-    width: 50%;
-    transition: 0.4s all;
-}
-#tempToggle > *:hover {
-    background: rgba(255,255,255,0.2);
-}
-#tempToggle > *.active, #tempToggle > *.active:hover {
-    background: rgba(255,255,255,0.5);
-}
+    #tempToggle > * {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 0.5em 0 0.8em 0;
+        text-align: center;
+        width: 50%;
+        transition: 0.4s all;
+    }
+        #tempToggle > *:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        #tempToggle > *.active, #tempToggle > *.active:hover {
+            background: rgba(255,255,255,0.5);
+        }
 
 
 .temperature .val:after, .apparentTemperature .val:after, .tempBar .low:after,.tempBar .high:after {
@@ -230,21 +230,21 @@ main {
     margin: 0 auto;
 }
 
-#currently .icon, #currently .temperature {
-    display: inline-block;
-    vertical-align: bottom;
-    font-size: 2.5em;
-}
-#currently .temperature {
-    font-size: 4em;
-    /*line-height: 1em;*/
-    margin-top: -0.2em;
-}
-#currently canvas {
-    height: 2em;
-    width: 4em;
-    margin: 0 -0.8em;
-}
+    #currently .icon, #currently .temperature {
+        display: inline-block;
+        vertical-align: bottom;
+        font-size: 2.5em;
+    }
+    #currently .temperature {
+        font-size: 4em;
+        /*line-height: 1em;*/
+        margin-top: -0.2em;
+    }
+    #currently canvas {
+        height: 2em;
+        width: 4em;
+        margin: 0 -0.8em;
+    }
 
 
 
@@ -254,14 +254,14 @@ main {
     margin: -0.3em auto 0;
     text-align: left;
 }
-#forecastSummary .label {
-    display: block;
-    padding: 0.5em 0 0;
-    line-height: 1em;
-    font-size: 1.2em;
-    font-weight: 400;
-    text-transform: uppercase;
-}
+    #forecastSummary .label {
+        display: block;
+        padding: 0.5em 0 0;
+        line-height: 1em;
+        font-size: 1.2em;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
 
 #next7Days ul {
     display: table;
@@ -272,61 +272,61 @@ main {
     border-top: 1px solid #bbb;
     background: rgba(0,0,0,0.1);
 }
-#next7Days li {
-    display: table-row;
-    margin: 0 auto;
-    border-bottom: 1px solid #bbb;
-}
-#next7Days li > div, #next7Days canvas {
-    padding: 1em 2%;
-    display: table-cell;
-    vertical-align: middle;
-}
-.dayOfWeek {
-    width: 2.8em;
-    min-width: 60px;
-    text-align: right;
-    font-weight: normal;
-    text-transform: uppercase;
-}
-.dayDescription {
-    text-align: left;
-}
-#next7Days .high, #next7Days .low {
-    padding: 0 2px;
-    /*width: 30px;*/
-    width: 15%;
-    text-align: right;
-}
-#next7Days .high {
-    text-align: left;
-    margin-left: 2px;
-}
+    #next7Days li {
+        display: table-row;
+        margin: 0 auto;
+        border-bottom: 1px solid #bbb;
+    }
+    #next7Days li > div, #next7Days canvas {
+        padding: 1em 2%;
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .dayOfWeek {
+        width: 2.8em;
+        min-width: 60px;
+        text-align: right;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+    .dayDescription {
+        text-align: left;
+    }
+    #next7Days .high, #next7Days .low {
+        padding: 0 2px;
+        /*width: 30px;*/
+        width: 15%;
+        text-align: right;
+    }
+        #next7Days .high {
+            text-align: left;
+            margin-left: 2px;
+        }
 
-#next7Days .tempBar {
-    text-align: left;
-    min-width: 210px;
-    width: 30%;
-}
-#next7Days .tempBar > span {
-    display: inline-block;
-}
-#next7Days .tempBar .bar {
-    display: inline-block;
-    margin: 0 2px -1px;
-    min-width:2px;
-    height: 0.95em;
-    border-radius: 0.5em;
-    border: 1px solid #fff;
-    background: rgba(255,255,255,0.6);
-}
+    #next7Days .tempBar {
+        text-align: left;
+        min-width: 210px;
+        width: 30%;
+    }
+        #next7Days .tempBar > span {
+            display: inline-block;
+        }
+        #next7Days .tempBar .bar {
+            display: inline-block;
+            margin: 0 2px -1px;
+            min-width:2px;
+            height: 0.95em;
+            border-radius: 0.5em;
+            border: 1px solid #fff;
+            background: rgba(255,255,255,0.6);
+        }
 
-#next7Days canvas {
-    height: 2em;
-    width: 4em;
-    min-width: 60px;
-    /*margin: 0 -0.8em;*/
-}
+    #next7Days canvas {
+        height: 2em;
+        width: 4em;
+        min-width: 60px;
+        /*margin: 0 -0.8em;*/
+    }
 
 
 
@@ -338,13 +338,13 @@ footer {
     text-align: center;
     background: #000;
 }
-#footerInner {
-    position: relative;
-    width: 90%;
-    display: inline-block;
-    text-align: right;
-    font-size: 0.8em;
-}
+    #footerInner {
+        position: relative;
+        width: 90%;
+        display: inline-block;
+        text-align: right;
+        font-size: 0.8em;
+    }
 
 
 
@@ -440,49 +440,49 @@ footer {
         float: none;
         width: auto;
     }
-    #logo { padding-bottom: 0 }
+        #logo { padding-bottom: 0 }
 
-    #next7Days ul {
-        display: block;
-        background: none;
-        border: none;
-    }
+#next7Days ul {
+    display: block;
+    background: none;
+    border: none;
+}
     #next7Days ul li {
         display: block;
         border: none;
         margin-bottom: 1em;
     }
-    #next7Days ul li > * {
-        display: inline-block;
-        vertical-align: middle;
-        padding: 5px 1%;
-    }
-    #next7Days .dayOfWeek, #next7Days canvas {
-        font-size: 1.3em;
-        padding-bottom: 0;
-    }
-    #next7Days canvas {
-        width: 4em;
-        margin: 0 -0.7em;
-    }
-    #next7Days .dayDescription, #next7Days .tempBar {
-        display: block;
-        margin: 0 auto;
-        padding: 0.3em 0;
-        width: 90%;
-        text-align: center;
-    }
-    #next7Days .tempBar {
-        text-align: left !important;
-        width: 80%;
-        border-top: 1px solid #bbb;
-        border-bottom: 1px solid #bbb;
-    }
-    #next7Days .tempBar:before {
-        content: '';
-        display: inline-block;
-        width: 10%;
-    }
+        #next7Days ul li > * {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 5px 1%;
+        }
+        #next7Days .dayOfWeek, #next7Days canvas {
+            font-size: 1.3em;
+            padding-bottom: 0;
+        }
+        #next7Days canvas {
+            width: 4em;
+            margin: 0 -0.7em;
+        }
+        #next7Days .dayDescription, #next7Days .tempBar {
+            display: block;
+            margin: 0 auto;
+            padding: 0.3em 0;
+            width: 90%;
+            text-align: center;
+        }
+            #next7Days .tempBar {
+                text-align: left !important;
+                width: 80%;
+                border-top: 1px solid #bbb;
+                border-bottom: 1px solid #bbb;
+            }
+                #next7Days .tempBar:before {
+                    content: '';
+                    display: inline-block;
+                    width: 10%;
+                }
 }
 
 @media(max-height:600px) {
@@ -595,9 +595,9 @@ footer {
 }
 
 @media print,
-(-webkit-min-device-pixel-ratio: 1.25),
-(min-resolution: 1.25dppx),
-(min-resolution: 120dpi) {
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 1.25dppx),
+       (min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
 }
 

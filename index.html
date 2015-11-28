@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -8,57 +8,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mainTesting.css">
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 
 
 </head>
 <body>
-<div style="border:1px solid #fff; padding:1em; width: 200px; display:block; margin:0 auto;">
-    <h1 style="font-size:1.2em; margin-top: 0.2em; text-transform:uppercase;">Foresight</h1>
-    <p>- - - Weather App - - -</p>
-</div>
-<br>
+<aside>
 
-<input id="locationInput" type="search" placeholder="Enter Location" autofocus />
-<p class="errorMessage"></p>
-<br><br>
+    <div id="mainTitle">
+        <h1>Foresight</h1>
+        <p>- - - Weather App - - -</p>
+    </div>
 
-<div id="loadingResults">Fetching Forecast...</div>
-<div id="results">
-    <h2 class="locationName"></h2>
+    <input id="hereInput" type="search" placeholder="Enter New Location" autofocus />
+    <p class="errorMessage"></p>
+    <br>
 
-    <div id="currently">
-        <h3>Right Now</h3>
+    <div id="tempToggle">
+        <span id="fahrenheit" class="active">°F</span><!--
+         --><span id="celsius">°C</span>
+    </div>
 
-        <div class="icon">
-            <canvas></canvas>
-        </div>
-        <div class="temperature">
-            <span class="val"></span>
-        </div>
+    <div id="userAlert">Fetching Forecast...</div>
 
-        <ul>
-            <li class="summary">
-                <span class="label">Currently: </span>
+</aside>
+<main>
+    <div id="results">
+        <h2 class="locationName"></h2>
+
+        <div id="currently">
+            <h3>Right Now</h3>
+
+            <div class="icon">
+                <canvas></canvas>
+            </div>
+            <div class="temperature">
                 <span class="val"></span>
-            </li>
-            <li class="apparentTemperature">
-                <span class="label">Feels Like: </span>
-                <span class="val"></span>
-            </li>
-            <li class="windSpeed">
-                <span class="label">Wind Speed: </span>
-                <span class="val"></span>
-            </li>
-            <li class="visibility">
-                <span class="label">Visibility: </span>
-                <span class="val"></span>
-            </li>
-        </ul>
-    </div><!--
+            </div>
 
- --><div id="forecastSummary">
+            <ul>
+                <li class="summary">
+                    <span class="label">Currently: </span>
+                    <span class="val"></span>
+                </li>
+                <li class="apparentTemperature">
+                    <span class="label">Feels Like: </span>
+                    <span class="val"></span>
+                </li>
+                <li class="windSpeed">
+                    <span class="label">Wind Speed: </span>
+                    <span class="val"></span>
+                </li>
+                <li class="visibility">
+                    <span class="label">Visibility: </span>
+                    <span class="val"></span>
+                </li>
+            </ul>
+        </div><!--
+
+             --><div id="forecastSummary">
         <h3>Forecast Summary</h3>
         <ul>
             <li class="nextHour">
@@ -77,62 +86,57 @@
     </div>
 
 
-    <div id="next7Days">
-        <h3>Next 7 Days</h3>
-        <ul>
-            <li id="day0">
-                <div class="dayOfWeek">loading...</div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day1">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day2">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day3">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day4">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day5">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-            <li id="day6">
-                <div class="dayOfWeek"></div>
-                <canvas class="icon"></canvas>
-                <div class="dayDescription"></div>
-                <div class="high"></div>
-                <div class="low"></div>
-            </li>
-        </ul>
-    </div>
+        <div id="next7Days">
+            <h3>Next 7 Days</h3>
+            <ul>
+                <li id="day0">
+                    <div class="dayOfWeek">loading...</div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day1">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day2">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day3">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day4">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day5">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+                <li id="day6">
+                    <div class="dayOfWeek"></div>
+                    <canvas class="icon"></canvas>
+                    <div class="dayDescription"></div>
+                    <div class="tempBar"><span class="low"></span><span class="bar"></span><span class="high"></span></div>
+                </li>
+            </ul>
+        </div>
 
-</div>
+
+    </div>
+</main>
 
 
 <script src="js/modernizr-2.8.3.min.js"></script>
@@ -143,160 +147,223 @@
 
 
 <script>
-// OpenCageData variables - http://geocoder.opencagedata.com/ --------------------
-    var ocdApiKey = "4ace6317360a3946395ae4d807e84cd1",
-        ocdApiUrl = "http://api.opencagedata.com/geocode/v1/json?q=",
-        ocdRequestUrl = null,
-        locationData = null,
-        locationName = null,
-        locationInput = null,
-        inputFormatting = function(){
-            var checkName = function(input){
-                if ( input.city !== undefined ) { locationName = input.city; }
-                else if ( locationData.results[1].components.city !== undefined ) { locationName = locationData.results[1].components.city; }
-                else if ( input.administrative !== undefined ) { locationName = input.administrative }
-                else if ( input.county !== undefined ) { locationName = input.county; }
-                else if ( input.state !== undefined ) { locationName = input.state; }
-                else if ( input.country!== undefined ) { locationName = input.country; }
-                console.log(locationName);
-            }; checkName(locationData.results[0].components);
-            var locationExtra = '';
-            var checkState = function(data){
-                if ( locationName !== data.state && data.state !== undefined ) { locationExtra = ", " + data.state }
-                else if ( locationName == data.state && data.country_code !== undefined ) { locationExtra = ", " + (data.country_code).toUpperCase() }
-            }; checkState(locationData.results[0].components);
-            locationName = locationName + locationExtra;
-        };
+
+//  HERE Geocoding API - https://developer.here.com/rest-apis/documentation/geocoder --------------------
+var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
+        hereAppCode = "tfNG7bDEiDsZki_YRaTDfQ",
+        hereInput = null,
+        hereUrl = "http://geocoder.api.here.com/6.2/search.json?" + "lg=eng" + "&searchtext=",
+        hereRequestURL = null,
+        hereResult = null,
+        lat = null,
+        lng = null,
+        locationName = null;
 
 // Forecast.Io variables - https://developer.forecast.io/ --------------------
-    var fcApiUrl = "https://api.forecast.io/forecast",
+var fcApiUrl = "https://api.forecast.io/forecast",
         fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
         fcRequestUrl = null,
+        fcTempChoice = "us",
         weatherData = null;
 
 // Firebase variables - https://foresightweather.firebaseio.com/ --------------------
-    var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
+var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
         dataObject = null;
 
-// Time Variables --------------------
-    var date = new Date(),
-        today = date.getDay(),
-        dayNames = ['sun','mon','tue','wed','thu','fri','sat'];
-for (var i=0; i<7; i++) {
-    var ID = "#day"+i+" .dayOfWeek",
-            dayNumber = today+i;
-    if (dayNumber > 6) { dayNumber -=7 }
-    $(ID).text(dayNames[dayNumber] + ': ');
-}
-$('#day0 .dayOfWeek').text('today: ');
-
 // Skycons --------------------
-    var renderSkycons = function(){
-        var icons = new Skycons({"color": "#fff"}),
-                list  = [
-                    "clear-day", "clear-night", "partly-cloudy-day",
-                    "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
-                    "fog" ];
-        for(var i = list.length; i--; )
-            icons.set(list[i], list[i]);
-        icons.play();
-        for(i = list.length; i--; ) {
-            var weatherType = list[i],
-                    elements = document.getElementsByClassName( weatherType );
-            for (e = elements.length; e--;){
-                icons.set( elements[e], weatherType );
-            }
+var renderSkycons = function () {
+    var icons = new Skycons({"color": "#fff"}),
+            list = [
+                "clear-day", "clear-night", "partly-cloudy-day",
+                "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                "fog" ];
+    for (var i = list.length; i--;)
+        icons.set(list[i], list[i]);
+    icons.play();
+    for (i = list.length; i--;) {
+        var weatherType = list[i],
+                elements = document.getElementsByClassName(weatherType);
+        for (e = elements.length; e--;) {
+            icons.set(elements[e], weatherType);
         }
-    };
-
+    }
+};
 
 // Populating the HTML --------------------
-    var populateHtml = function() {
-        fireBase.on("value", function (snapshot) {
-            var lastSnapshot = snapshot.val();
-            $('.locationName').text(lastSnapshot.locationName);
+var populateHtml = function(input) {
 
-        // Current Conditions ----------
-            $('#currently .icon canvas').removeClass().addClass(lastSnapshot.forecast.currently.icon);
-            $('#currently .temperature .val').text(Math.floor(lastSnapshot.forecast.currently.temperature) + "°");
-            $('#currently .summary .val').text(lastSnapshot.forecast.currently.summary);
-            $('#currently .apparentTemperature .val').text(Math.round(lastSnapshot.forecast.currently.apparentTemperature) + "°");
+    $('.locationName').text(hereResult.Response.View[0].Result[0].Location.Address.Label);
+    if ((hereResult.Response.View[0].Result[0].Location.Address.Label).length < 20) {
+        $('h2.locationName').css('font-size', '3.2em')
+    }
+    else {
+        $('h2.locationName').css('font-size', '2.5em')
+    }
 
-            $('#currently .humidity .val').text(Math.floor((lastSnapshot.forecast.currently.humidity) * 100) + "%");
-            $('#currently .windSpeed .val').text(Math.round(lastSnapshot.forecast.currently.windSpeed) + " mph");
-            $('#currently .visibility .val').text(Math.round(lastSnapshot.forecast.currently.visibility) + " mi");
+    // Current Conditions ----------
+    $('#currently .icon canvas').removeClass().addClass(input.currently.icon);
+    $('#currently .temperature .val').text(Math.floor(input.currently.temperature));
+    $('#currently .summary .val').text(input.currently.summary);
+    $('#currently .apparentTemperature .val').text(Math.round(input.currently.apparentTemperature));
 
-            $('#forecastSummary .nextHour .val').text(lastSnapshot.forecast.minutely.summary);
-            $('#forecastSummary .nextDay .val').text(lastSnapshot.forecast.hourly.summary);
-            $('#forecastSummary .nextWeek .val').text(lastSnapshot.forecast.daily.summary);
+    $('#currently .humidity .val').text(Math.floor((input.currently.humidity) * 100) + "%");
+    $('#currently .windSpeed .val').text(Math.round(input.currently.windSpeed) + " mph");
+    $('#currently .visibility .val').text(Math.round(input.currently.visibility) + " mi");
 
-        // Daily Summary ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" .dayDescription";
-                $(ID).text(lastSnapshot.forecast.daily.data[i].summary);
+    if (input.minutely) {
+        $('#forecastSummary .nextHour .val').text(input.minutely.summary);
+    } else {
+        $('#forecastSummary .nextHour .val').text("[no data available]")
+    }
+    $('#forecastSummary .nextDay .val').text(input.hourly.summary);
+    $('#forecastSummary .nextWeek .val').text(input.daily.summary);
+
+    // Days of the Week ----------
+    var date = new Date(),
+            myOffset = date.getTimezoneOffset()/60,
+            locationOffset = weatherData.offset,
+            locationHourNow = date.getHours() + myOffset + locationOffset,
+            today = date.getDay(),
+            dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    while (locationHourNow > 24) { locationHourNow -= 24; today += 1; }
+    for (var i = 0; i < 7; i++) {
+        var ID = "#day" + i + " .dayOfWeek",
+                dayNumber = today + i;
+        while (dayNumber > 6) { dayNumber -= 7 }
+        $(ID).text(dayNames[dayNumber] + ': ');
+    }
+    $('#day0 .dayOfWeek').text('today: ');
+
+    // Daily Summary ----------
+    for (var i = 0; i < 7; i++) {
+        var ID = "#day" + i + " .dayDescription";
+        $(ID).text(input.daily.data[i].summary);
+    }
+
+    // Daily Highs and Lows ----------
+    var totalRange = [],
+            dailyRange = [];
+    for (var i=0; i<7; i++) {
+        var tempMax = (Math.round(input.daily.data[i].temperatureMax)),
+                tempMin = (Math.round(input.daily.data[i].temperatureMin));
+        var ID = "#day"+i;
+        $(ID).data('high',tempMax).data('low',tempMin);
+        $(ID + ' .high').text($(ID).data('high'));
+        $(ID + ' .low').text($(ID).data('low'));
+        totalRange.push(tempMax, tempMin);
+    }
+    totalRange.sort(function(a,b){ return a - b; });
+    var weekRange = (totalRange[totalRange.length-1]) - (totalRange[0]);
+    for (var i=0; i<7; i++) {
+        var ID = "#day"+ i,
+                rangeMultiplier = 100/weekRange,
+                spanWidth = ($(ID).data('high'))-($(ID).data('low')),
+                tempMin = (Math.round(input.daily.data[i].temperatureMin)),
+                shift = (tempMin - totalRange[0])*rangeMultiplier/2 + "%";
+        $(ID+' .tempBar .bar').css('width',(spanWidth*rangeMultiplier*(0.5))+"%");
+        $(ID+' .tempBar .low').css('padding-left',shift);
+    }
+
+    // Daily Icon ----------
+    for (var i=0; i<7; i++) {
+        var ID = "#day"+i+" canvas";
+        $(ID).removeClass().addClass(input.daily.data[i].icon);
+    }
+    renderSkycons();
+
+};
+
+// Weather Request -------------------
+var lat = null,
+        lng = null;
+var locationJsonRequest = function(){
+    $.ajax({
+        url: (hereRequestURL),
+        dataType: 'json',
+        success: (function(data){
+            hereResult = data;
+            if (hereResult.Response.View[0] && hereResult.Response.View[0].Result[0].Location) {
+                lat = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Latitude;
+                lng = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Longitude;
+                weatherJsonRequest("Network failure, please try again.");
+            } else {
+                userAlertFail("Please try a different location.");
+                fail("Couldn't get Lat/Lng data.")
             }
+        }),
+        timeout: 6000,
+        error: (function(){
+            userAlertFail("Network failure, please try again.");
+            fail("Timeout while getting location data.");
+        })
+    });
+};
+var weatherJsonRequest = function (failMessage){
+    fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?&units=" + fcTempChoice;
+    $.ajax({
+        url: fcRequestUrl,
+        dataType: 'json',
+        success: (function(data){
+            weatherData = data;
+            populateHtml(weatherData);
+            showResults();
+            win("Fetched and Populated the Forecast.");
+            $('#tempToggle').fadeIn();
+        }),
+        timeout: 6000,
+        error: (function(){
+            userAlertFail(failMessage);
+            fail("getting forecast.io JSON data.");
+        })
+    });
+};
 
-        // Daily Highs and Lows ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" .high";
-                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMax) + "°");
-                var ID = "#day"+i+" .low";
-                $(ID).text(Math.floor(lastSnapshot.forecast.daily.data[i].temperatureMin) + "°");
-            }
+// Temperature Toggle (Fahrenheit to Celsius) --------------------
+var tempToggle = function(){
+    $('#tempToggle').click(function() {
+        if (fcTempChoice == "us") {
+            fcTempChoice = "si";
+            $('#fahrenheit').toggleClass('active');
+            $('#celsius').toggleClass('active');
+            userAlertLoading("Changing to Celsius...");
+            weatherJsonRequest("Sorry, connection error.");
+        } else {
+            fcTempChoice = "us";
+            $('#fahrenheit').toggleClass('active');
+            $('#celsius').toggleClass('active');
+            userAlertLoading("Changing to Fahrenheit...");
+            weatherJsonRequest("Sorry, connection error.");
+        }
+    });
+};
 
-        // Daily Icon ----------
-            for (var i=0; i<7; i++) {
-                var ID = "#day"+i+" canvas";
-                $(ID).removeClass().addClass(lastSnapshot.forecast.daily.data[i].icon);
-            }
-
-            renderSkycons();
-
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-        });
-    };
-
-// Other Global Variables -------------------
-    var fail = function(failurePoint){ return (console.log("Failure: " + failurePoint)) },
-        win = function(){ return (console.log("Success!")) },
-        showResults = function(){ $('#results').show();
-                                  $('#loadingResults').hide()},
-        hideResults = function(){ $('#results').hide();
-                                  $('#loadingResults').show()};
-
+// Other bits and pieces -------------------
+var fail = function(failurePoint){
+            $('#tempToggle').fadeOut();
+            return (console.log ("Failure: " + failurePoint))
+        },
+        win = function(successPoint){ return (console.log("Success! " + successPoint)); $('#userAlert').fadeOut(); },
+        userAlertFail = function(message){ $('#userAlert').fadeIn().text(message); $('#hereInput').focus(); },
+        userAlertLoading = function(message){ $('#userAlert').fadeIn().text(message);},
+        userAlertFadeOut = function(){ $('#userAlert').fadeOut();},
+        showResults = function(){ $('#results').fadeIn(); userAlertFadeOut()},
+        hideResults = function(){ $('#results').fadeOut(); userAlertLoading("Fetching Forecast...") };
 
 // Putting Everything together -------------------
-    $(document).ready(function(){
-//        populateHtml();
-//        showResults();
-        hideResults;
-        $('#locationInput').keyup(function(e) {
-            locationInput = $('#locationInput').val().toLowerCase();
-            if (e.keyCode == 13) {
-                hideResults();
-                ocdRequestUrl = ocdApiUrl + locationInput + "&key=" + ocdApiKey;
-                $.getJSON(ocdRequestUrl, function(data) {
-                    locationData = data;
-                    fireBase.child("location").set(locationData);
-                    inputFormatting();
-                    fireBase.child("locationName").set(locationName);
-                    var lat = locationData.results[0].geometry.lat,
-                            lng = locationData.results[0].geometry.lng;
-                    fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?";
-                    $.getJSON(fcRequestUrl, function(data){
-                        weatherData = data;
-                        fireBase.child("forecast").set(weatherData);
-                        populateHtml();
-                        showResults();
-                    })
-                    .success(function(){ win("Fetched and Populated the Forecast."); })
-                    .error(function(){ fail("getting forecast.io JSON data."); });
-                }).error(function(){ fail("getting location JSON data."); });
-                $('#locationInput').val('');
-            }
-        });
+$(document).ready(function(){
+    $('#hereInput').keyup(function(e) {
+        hereInput = $('#hereInput').val().toLowerCase();
+        if (e.keyCode == 13) {
+            hideResults();
+            $('#tempToggle').fadeOut();
+            hereInput = $('#hereInput').val();
+            $('#hereInput').val('').blur();
+            hereRequestURL = hereUrl + hereInput + "&app_code=" + hereAppCode + "&app_id=" + hereAppId;
+            locationJsonRequest();
+        }
     });
+    tempToggle();
+});
 
 
 </script>
@@ -304,3 +371,19 @@ $('#day0 .dayOfWeek').text('today: ');
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
