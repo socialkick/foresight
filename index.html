@@ -24,11 +24,15 @@
     <input id="hereInput" type="search" placeholder="Enter New Location" autofocus />
     <p class="errorMessage"></p>
     <br>
-    <div id="login">Login</div>
+    <div id="login">Login w/ Google</div>
     <div id="userName"></div><!--
  --><span> </span><div id="logout">- Logout</div>
-    <div id="homeCity">+ Set Home City</div>
-    <hr>
+    <!--
+    <div id="addCity">Add This City to List</div>
+    <ul id="cityList">
+        <li></li>
+    </ul>
+    -->
 
     <div id="tempToggle">
         <span id="fahrenheit" class="active">°F</span><!--
@@ -176,12 +180,24 @@
         dataObject = null;
 
 // Firebase Login (currently using Google verification) --------------------
-    var userInfo = null;
+    var savedCities = null,
+        loggedIn = false,
+        loggingIn = function(){
+            loggedIn = true;
+            fireBase.child('userData/' + userInfo.uid + '/savedCities').on("value", function(snapshot) {
+                save = snapshot.val();
+            });
+        },
+        loggingOut = function(){
+            loggedIn = false;
+        },
+        userInfo = null;
     $('#logout').css("display","none").click(function(){
         fireBase.unauth();
         $(this).css("display","none");
-        $('#login').text("Login").css("display","inline-block");
+        $('#login').text("Login w/ Google").css("display","inline-block");
         $('#userName').text("").css("display","none");
+        loggingOut();
         console.log("Logout Successful.");
     });
     $('#login').css("display","inline-block").click(function(){
@@ -191,6 +207,7 @@
             } else {
                 console.log("Authenticated successfully with payload:", authData);
                 userInfo = authData;
+                loggingIn();
                 $('#logout').css("display","inline-block");
                 $('#login').css("display","none");
             }
@@ -209,23 +226,41 @@
         }
     });
     function getName(authData) {
-        $('#userName').text(authData.google.displayName).css("display","inline-block");
-        return authData.google.displayName;
+        if (authData.google.displayName) {
+            $('#userName').text(authData.google.displayName).css("display","inline-block");
+            userInfo = authData;
+            loggingIn();
+            return authData.google.displayName;
+        }
     }
 
 // Firebase User & Location Data --------------------
-    var savedCityName = null,
-        savedCityUrl = null,
+    var lastSearchedCity = null,
+        lastSearchedUrl = null,
         currentCityName = null,
         currentCityUrl = null,
         updateUserCity = function(){
-            currentCityName = hereResult.Response.View[0].Result[0].Location.Address.Label;
-            currentCityUrl = fcRequestUrl;
-            savedCityName = 'userData/' + userInfo.uid + '/cityName';
-            savedCityUrl = 'userData/' + userInfo.uid + '/cityUrl';
-            fireBase.child(savedCityName).set(currentCityName);
-            fireBase.child(savedCityUrl).set(currentCityUrl);
+            lastSearchedCity = hereResult.Response.View[0].Result[0].Location.Address.Label;
+            lastSearchedUrl = fcRequestUrl;
+            currentCityName = 'userData/' + userInfo.uid + '/cityName';
+            currentCityUrl = 'userData/' + userInfo.uid + '/cityUrl';
+            fireBase.child(currentCityName).set(lastSearchedCity);
+            fireBase.child(currentCityUrl).set(lastSearchedUrl);
         };
+        $('#addCity').click(function(){
+            fireBase.child(savedCities + '/' + currentCityName).set(currentCityName);
+            fireBase.child(savedCities + '/' + currentCityName + '/locationUrl').set(currentCityUrl);
+        });
+
+//            var numberOfCities = null;
+//            fireBase.child(savedCities).on("value", function(snapshot){
+//                numberOfCities = (snapshot.val()).length;
+//                var cityList = fireBase.child(savedCities);
+//                $('#cityList').text('');
+//                for (var i=0; i<numberOfCities; i++) {
+//                    $('#cityList').append('<li>' + cityList[i] + '</li>');
+//                }
+//            });
 
 // Skycons --------------------
     var renderSkycons = function () {
@@ -404,8 +439,8 @@
         userAlertFail = function(message){ $('#userAlert').fadeIn().text(message); $('#hereInput').focus(); },
         userAlertLoading = function(message){ $('#userAlert').fadeIn().text(message);},
         userAlertFadeOut = function(){ $('#userAlert').fadeOut();},
-        showResults = function(){ $('#results').fadeIn(); userAlertFadeOut()},
-        hideResults = function(){ $('#results').fadeOut(); userAlertLoading("Fetching Forecast...") };
+        showResults = function(){ $('#results').fadeIn(); $('#addCity').fadeIn(); userAlertFadeOut()},
+        hideResults = function(){ $('#results').fadeOut(); $('#addCity').fadeOut(); userAlertLoading("Fetching Forecast...") };
 
 
 
