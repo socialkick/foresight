@@ -27,12 +27,10 @@
     <div id="login">Login w/ Google</div>
     <div id="userName"></div><!--
  --><span> </span><div id="logout">- Logout</div>
-    <!--
     <div id="addCity">Add This City to List</div>
-    <ul id="cityList">
-        <li></li>
-    </ul>
-    -->
+    <!--<ul id="cityList">-->
+        <!--<li></li>-->
+    <!--</ul>-->
 
     <div id="tempToggle">
         <span id="fahrenheit" class="active">°F</span><!--
@@ -180,15 +178,13 @@
         dataObject = null;
 
 // Firebase Login (currently using Google verification) --------------------
-    var savedCities = null,
-        loggedIn = false,
+    var loggedIn = false,
         loggingIn = function(){
+            fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('true');
             loggedIn = true;
-            fireBase.child('userData/' + userInfo.uid + '/savedCities').on("value", function(snapshot) {
-                save = snapshot.val();
-            });
         },
         loggingOut = function(){
+            fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('false');
             loggedIn = false;
         },
         userInfo = null;
@@ -198,6 +194,7 @@
         $('#login').text("Login w/ Google").css("display","inline-block");
         $('#userName').text("").css("display","none");
         loggingOut();
+        hideResults();
         console.log("Logout Successful.");
     });
     $('#login').css("display","inline-block").click(function(){
@@ -235,32 +232,23 @@
     }
 
 // Firebase User & Location Data --------------------
-    var lastSearchedCity = null,
+    var lastSearchedLocation = null,
         lastSearchedUrl = null,
-        currentCityName = null,
-        currentCityUrl = null,
+        currentLocationName = null,
+        currentLocationUrl = null,
         updateUserCity = function(){
-            lastSearchedCity = hereResult.Response.View[0].Result[0].Location.Address.Label;
+            lastSearchedLocation = hereResult.Response.View[0].Result[0].Location.Address.Label;
             lastSearchedUrl = fcRequestUrl;
-            currentCityName = 'userData/' + userInfo.uid + '/cityName';
-            currentCityUrl = 'userData/' + userInfo.uid + '/cityUrl';
-            fireBase.child(currentCityName).set(lastSearchedCity);
-            fireBase.child(currentCityUrl).set(lastSearchedUrl);
+            currentLocationName = 'user_data/' + userInfo.uid + '/last_search/location_name';
+            currentLocationUrl = 'user_data/' + userInfo.uid + '/last_search/location_url';
+            fireBase.child(currentLocationName).set(lastSearchedLocation);
+            fireBase.child(currentLocationUrl).set(lastSearchedUrl);
         };
         $('#addCity').click(function(){
-            fireBase.child(savedCities + '/' + currentCityName).set(currentCityName);
-            fireBase.child(savedCities + '/' + currentCityName + '/locationUrl').set(currentCityUrl);
+            fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation).set(currentLocationName);
+            fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation + '/location_Url').set(currentLocationUrl);
         });
 
-//            var numberOfCities = null;
-//            fireBase.child(savedCities).on("value", function(snapshot){
-//                numberOfCities = (snapshot.val()).length;
-//                var cityList = fireBase.child(savedCities);
-//                $('#cityList').text('');
-//                for (var i=0; i<numberOfCities; i++) {
-//                    $('#cityList').append('<li>' + cityList[i] + '</li>');
-//                }
-//            });
 
 // Skycons --------------------
     var renderSkycons = function () {
@@ -440,7 +428,7 @@
         userAlertLoading = function(message){ $('#userAlert').fadeIn().text(message);},
         userAlertFadeOut = function(){ $('#userAlert').fadeOut();},
         showResults = function(){ $('#results').fadeIn(); $('#addCity').fadeIn(); userAlertFadeOut()},
-        hideResults = function(){ $('#results').fadeOut(); $('#addCity').fadeOut(); userAlertLoading("Fetching Forecast...") };
+        hideResults = function(){ $('#results').fadeOut(); $('#addCity').fadeOut(); $('#tempToggle').fadeOut(); };
 
 
 
@@ -450,7 +438,7 @@
             hereInput = $('#hereInput').val().toLowerCase();
             if (e.keyCode == 13) {
                 hideResults();
-                $('#tempToggle').fadeOut();
+                userAlertLoading("Fetching Forecast...");
                 hereInput = $('#hereInput').val();
                 $('#hereInput').val('').blur();
                 hereRequestURL = hereUrl + hereInput + "&app_code=" + hereAppCode + "&app_id=" + hereAppId;
