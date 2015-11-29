@@ -28,9 +28,9 @@
     <div id="userName"></div><!--
  --><span> </span><div id="logout">- Logout</div>
     <div id="addCity">Add This City to List</div>
-    <!--<ul id="cityList">-->
-        <!--<li></li>-->
-    <!--</ul>-->
+    <ul id="cityList">
+        <li></li>
+    </ul>
 
     <div id="tempToggle">
         <span id="fahrenheit" class="active">°F</span><!--
@@ -177,14 +177,53 @@
     var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
         dataObject = null;
 
+// Firebase User & Location Data --------------------
+    var childData = null;
+    var key = null;
+    var buildCityList = function(){
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities').on("value", function(snapshot) {
+            $('#cityList').text('');
+            var count = 0;
+            // The callback function will get called twice, once for "fred" and once for "barney"
+            snapshot.forEach(function(childSnapshot) {
+                count++;
+                // key will be "fred" the first time and "barney" the second time
+                key = childSnapshot.key();
+                childData = childSnapshot.val();
+                $('#cityList').append('<li class="savedCity" id="savedCity' + count + '" data-forecast="' + childData.location_url + '">' + key + '</li>');
+                $('#savedCity'+count).click(function(){console.log('Saved City Link Clicked. (nothing happens yet)')});
+            });
+        });
+    };
+
+
+    var lastSearchedLocation = null,
+            lastSearchedUrl = null,
+            currentLocationName = null,
+            currentLocationUrl = null,
+            updateUserCity = function(){
+                lastSearchedLocation = hereResult.Response.View[0].Result[0].Location.Address.Label;
+                lastSearchedUrl = fcRequestUrl;
+                currentLocationName = 'user_data/' + userInfo.uid + '/last_search/location_name';
+                currentLocationUrl = 'user_data/' + userInfo.uid + '/last_search/location_url';
+                fireBase.child(currentLocationName).set(lastSearchedLocation);
+                fireBase.child(currentLocationUrl).set(lastSearchedUrl);
+            };
+    $('#addCity').click(function(){
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation);
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation + '/location_url').set(lastSearchedUrl);
+    });
+
 // Firebase Login (currently using Google verification) --------------------
     var loggedIn = false,
         loggingIn = function(){
             fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('true');
+            buildCityList();
             loggedIn = true;
         },
         loggingOut = function(){
             fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('false');
+            $('#cityList').text('');
             loggedIn = false;
         },
         userInfo = null;
@@ -230,25 +269,6 @@
             return authData.google.displayName;
         }
     }
-
-// Firebase User & Location Data --------------------
-    var lastSearchedLocation = null,
-        lastSearchedUrl = null,
-        currentLocationName = null,
-        currentLocationUrl = null,
-        updateUserCity = function(){
-            lastSearchedLocation = hereResult.Response.View[0].Result[0].Location.Address.Label;
-            lastSearchedUrl = fcRequestUrl;
-            currentLocationName = 'user_data/' + userInfo.uid + '/last_search/location_name';
-            currentLocationUrl = 'user_data/' + userInfo.uid + '/last_search/location_url';
-            fireBase.child(currentLocationName).set(lastSearchedLocation);
-            fireBase.child(currentLocationUrl).set(lastSearchedUrl);
-        };
-        $('#addCity').click(function(){
-            fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation).set(currentLocationName);
-            fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation + '/location_Url').set(currentLocationUrl);
-        });
-
 
 // Skycons --------------------
     var renderSkycons = function () {
