@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/mainTesting.css">
+    <link rel="stylesheet" href="css/main.css">
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
 
 
@@ -24,6 +24,13 @@
     <input id="hereInput" type="search" placeholder="Enter New Location" autofocus />
     <p class="errorMessage"></p>
     <br>
+    <div id="login">Login w/ Google</div>
+    <div id="userName"></div><!--
+ --><span> </span><div id="logout">- Logout</div>
+    <div id="addCity">Add This City to List</div>
+    <ul id="cityList">
+        <li></li>
+    </ul>
 
     <div id="tempToggle">
         <span id="fahrenheit" class="active">°F</span><!--
@@ -149,7 +156,7 @@
 <script>
 
 //  HERE Geocoding API - https://developer.here.com/rest-apis/documentation/geocoder --------------------
-var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
+    var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
         hereAppCode = "tfNG7bDEiDsZki_YRaTDfQ",
         hereInput = null,
         hereUrl = "http://geocoder.api.here.com/6.2/search.json?" + "lg=eng" + "&searchtext=",
@@ -160,37 +167,130 @@ var hereAppId = "o5tRxnkAAAkjiuRR6BSQ",
         locationName = null;
 
 // Forecast.Io variables - https://developer.forecast.io/ --------------------
-var fcApiUrl = "https://api.forecast.io/forecast",
+    var fcApiUrl = "https://api.forecast.io/forecast",
         fcApiKey = "2dcaef59f4ef9b896eb1af4ad29d9aa2",
         fcRequestUrl = null,
         fcTempChoice = "us",
         weatherData = null;
 
 // Firebase variables - https://foresightweather.firebaseio.com/ --------------------
-var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
+    var fireBase = new Firebase("https://foresightWeather.firebaseio.com/"),
         dataObject = null;
 
-// Skycons --------------------
-var renderSkycons = function () {
-    var icons = new Skycons({"color": "#fff"}),
-            list = [
-                "clear-day", "clear-night", "partly-cloudy-day",
-                "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
-                "fog" ];
-    for (var i = list.length; i--;)
-        icons.set(list[i], list[i]);
-    icons.play();
-    for (i = list.length; i--;) {
-        var weatherType = list[i],
-                elements = document.getElementsByClassName(weatherType);
-        for (e = elements.length; e--;) {
-            icons.set(elements[e], weatherType);
+// Firebase User & Location Data --------------------
+    var childData = null;
+    var key = null;
+    var buildCityList = function(){
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities').on("value", function(snapshot) {
+            $('#cityList').text('');
+            var count = 0;
+            // The callback function will get called twice, once for "fred" and once for "barney"
+            snapshot.forEach(function(childSnapshot) {
+                count++;
+                // key will be "fred" the first time and "barney" the second time
+                key = childSnapshot.key();
+                childData = childSnapshot.val();
+                $('#cityList').append('<li class="savedCity" id="savedCity' + count + '" data-forecast="' + childData.location_url + '">' + key + '</li>');
+                $('#savedCity'+count).click(function(){console.log('Saved City Link Clicked. (nothing happens yet)')});
+            });
+        });
+    };
+
+
+    var lastSearchedLocation = null,
+            lastSearchedUrl = null,
+            currentLocationName = null,
+            currentLocationUrl = null,
+            updateUserCity = function(){
+                lastSearchedLocation = hereResult.Response.View[0].Result[0].Location.Address.Label;
+                lastSearchedUrl = fcRequestUrl;
+                currentLocationName = 'user_data/' + userInfo.uid + '/last_search/location_name';
+                currentLocationUrl = 'user_data/' + userInfo.uid + '/last_search/location_url';
+                fireBase.child(currentLocationName).set(lastSearchedLocation);
+                fireBase.child(currentLocationUrl).set(lastSearchedUrl);
+            };
+    $('#addCity').click(function(){
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation);
+        fireBase.child('user_data/' + userInfo.uid + '/saved_cities/' + lastSearchedLocation + '/location_url').set(lastSearchedUrl);
+    });
+
+// Firebase Login (currently using Google verification) --------------------
+    var loggedIn = false,
+        loggingIn = function(){
+            fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('true');
+            buildCityList();
+            loggedIn = true;
+        },
+        loggingOut = function(){
+            fireBase.child('user_data/' + userInfo.uid + '/logged_in').set('false');
+            $('#cityList').text('');
+            loggedIn = false;
+        },
+        userInfo = null;
+    $('#logout').css("display","none").click(function(){
+        fireBase.unauth();
+        $(this).css("display","none");
+        $('#login').text("Login w/ Google").css("display","inline-block");
+        $('#userName').text("").css("display","none");
+        loggingOut();
+        hideResults();
+        console.log("Logout Successful.");
+    });
+    $('#login').css("display","inline-block").click(function(){
+        fireBase.authWithOAuthPopup("google", function(error, authData) {
+            if (error) {
+                console.log("Login Failed!", error);
+            } else {
+                console.log("Authenticated successfully with payload:", authData);
+                userInfo = authData;
+                loggingIn();
+                $('#logout').css("display","inline-block");
+                $('#login').css("display","none");
+            }
+        });
+    });
+    var isNewUser = true;
+    fireBase.onAuth(function(authData) {
+        if (authData && isNewUser) {
+            fireBase.child("users").child(authData.uid).set({
+                provider: authData.provider,
+                name: getName(authData)
+            });
+            userInfo = authData;
+            $('#logout').css("display","inline-block");
+            $('#login').css("display","none");
+        }
+    });
+    function getName(authData) {
+        if (authData.google.displayName) {
+            $('#userName').text(authData.google.displayName).css("display","inline-block");
+            userInfo = authData;
+            loggingIn();
+            return authData.google.displayName;
         }
     }
-};
+
+// Skycons --------------------
+    var renderSkycons = function () {
+    var icons = new Skycons({"color": "#fff"}),
+        list = [
+            "clear-day", "clear-night", "partly-cloudy-day",
+            "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+            "fog" ];
+        for (var i = list.length; i--;)
+            icons.set(list[i], list[i]);
+        icons.play();
+        for (i = list.length; i--;) {
+            var weatherType = list[i],
+                    elements = document.getElementsByClassName(weatherType);
+            for (e = elements.length; e--;) {
+                icons.set(elements[e], weatherType);
+            }
+        }
+    };
 
 // Populating the HTML --------------------
-var populateHtml = function(input) {
+    var populateHtml = function(input) {
 
     $('.locationName').text(hereResult.Response.View[0].Result[0].Location.Address.Label);
     if ((hereResult.Response.View[0].Result[0].Location.Address.Label).length < 20) {
@@ -273,72 +373,73 @@ var populateHtml = function(input) {
 
 };
 
-// Weather Request -------------------
-var lat = null,
+// Location & Weather Requests -------------------
+    var lat = null,
         lng = null;
-var locationJsonRequest = function(){
-    $.ajax({
-        url: (hereRequestURL),
-        dataType: 'json',
-        success: (function(data){
-            hereResult = data;
-            if (hereResult.Response.View[0] && hereResult.Response.View[0].Result[0].Location) {
-                lat = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Latitude;
-                lng = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Longitude;
-                weatherJsonRequest("Network failure, please try again.");
-            } else {
-                userAlertFail("Please try a different location.");
-                fail("Couldn't get Lat/Lng data.")
-            }
-        }),
-        timeout: 6000,
-        error: (function(){
-            userAlertFail("Network failure, please try again.");
-            fail("Timeout while getting location data.");
-        })
-    });
-};
-var weatherJsonRequest = function (failMessage){
-    fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?&units=" + fcTempChoice;
-    $.ajax({
-        url: fcRequestUrl,
-        dataType: 'json',
-        success: (function(data){
-            weatherData = data;
-            populateHtml(weatherData);
-            showResults();
-            win("Fetched and Populated the Forecast.");
-            $('#tempToggle').fadeIn();
-        }),
-        timeout: 6000,
-        error: (function(){
-            userAlertFail(failMessage);
-            fail("getting forecast.io JSON data.");
-        })
-    });
-};
+    var locationJsonRequest = function(urlInput){
+        $.ajax({
+            url: (urlInput),
+            dataType: 'json',
+            success: (function(data){
+                hereResult = data;
+                if (hereResult.Response.View[0] && hereResult.Response.View[0].Result[0].Location) {
+                    lat = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Latitude;
+                    lng = hereResult.Response.View[0].Result[0].Location.NavigationPosition[0].Longitude;
+                    weatherJsonRequest("Network failure, please try again.");
+                } else {
+                    userAlertFail("Please try a different location.");
+                    fail("Couldn't get Lat/Lng data.")
+                }
+            }),
+            timeout: 6000,
+            error: (function(){
+                userAlertFail("Network failure, please try again.");
+                fail("Timeout while getting location data.");
+            })
+        });
+    };
+    var weatherJsonRequest = function (failMessage){
+        fcRequestUrl = fcApiUrl + "/" + fcApiKey  + "/" + lat + "," + lng + "?callback=?&units=" + fcTempChoice;
+        $.ajax({
+            url: fcRequestUrl,
+            dataType: 'json',
+            success: (function(data){
+                weatherData = data;
+                populateHtml(weatherData);
+                showResults();
+                updateUserCity();
+                win("Fetched and Populated the Forecast.");
+                $('#tempToggle').fadeIn();
+            }),
+            timeout: 6000,
+            error: (function(){
+                userAlertFail(failMessage);
+                fail("getting forecast.io JSON data.");
+            })
+        });
+    };
 
 // Temperature Toggle (Fahrenheit to Celsius) --------------------
-var tempToggle = function(){
-    $('#tempToggle').click(function() {
-        if (fcTempChoice == "us") {
-            fcTempChoice = "si";
-            $('#fahrenheit').toggleClass('active');
-            $('#celsius').toggleClass('active');
-            userAlertLoading("Changing to Celsius...");
-            weatherJsonRequest("Sorry, connection error.");
-        } else {
-            fcTempChoice = "us";
-            $('#fahrenheit').toggleClass('active');
-            $('#celsius').toggleClass('active');
-            userAlertLoading("Changing to Fahrenheit...");
-            weatherJsonRequest("Sorry, connection error.");
-        }
-    });
-};
+    var tempToggle = function(){
+        $('#tempToggle').click(function() {
+            if (fcTempChoice == "us") {
+                fcTempChoice = "si";
+                $('#fahrenheit').toggleClass('active');
+                $('#celsius').toggleClass('active');
+                userAlertLoading("Changing to Celsius...");
+                weatherJsonRequest("Sorry, connection error.");
+            } else {
+                fcTempChoice = "us";
+                $('#fahrenheit').toggleClass('active');
+                $('#celsius').toggleClass('active');
+                userAlertLoading("Changing to Fahrenheit...");
+                weatherJsonRequest("Sorry, connection error.");
+            }
+        });
+    };
 
 // Other bits and pieces -------------------
-var fail = function(failurePoint){
+    var fail = function(failurePoint){
             $('#tempToggle').fadeOut();
             return (console.log ("Failure: " + failurePoint))
         },
@@ -346,24 +447,27 @@ var fail = function(failurePoint){
         userAlertFail = function(message){ $('#userAlert').fadeIn().text(message); $('#hereInput').focus(); },
         userAlertLoading = function(message){ $('#userAlert').fadeIn().text(message);},
         userAlertFadeOut = function(){ $('#userAlert').fadeOut();},
-        showResults = function(){ $('#results').fadeIn(); userAlertFadeOut()},
-        hideResults = function(){ $('#results').fadeOut(); userAlertLoading("Fetching Forecast...") };
+        showResults = function(){ $('#results').fadeIn(); $('#addCity').fadeIn(); userAlertFadeOut()},
+        hideResults = function(){ $('#results').fadeOut(); $('#addCity').fadeOut(); $('#tempToggle').fadeOut(); };
+
+
 
 // Putting Everything together -------------------
-$(document).ready(function(){
-    $('#hereInput').keyup(function(e) {
-        hereInput = $('#hereInput').val().toLowerCase();
-        if (e.keyCode == 13) {
-            hideResults();
-            $('#tempToggle').fadeOut();
-            hereInput = $('#hereInput').val();
-            $('#hereInput').val('').blur();
-            hereRequestURL = hereUrl + hereInput + "&app_code=" + hereAppCode + "&app_id=" + hereAppId;
-            locationJsonRequest();
-        }
+    $(document).ready(function(){
+        $('#hereInput').keyup(function(e) {
+            hereInput = $('#hereInput').val().toLowerCase();
+            if (e.keyCode == 13) {
+                hideResults();
+                userAlertLoading("Fetching Forecast...");
+                hereInput = $('#hereInput').val();
+                $('#hereInput').val('').blur();
+                hereRequestURL = hereUrl + hereInput + "&app_code=" + hereAppCode + "&app_id=" + hereAppId;
+                locationJsonRequest(hereRequestURL);
+            }
+        });
+        tempToggle();
     });
-    tempToggle();
-});
+
 
 
 </script>
